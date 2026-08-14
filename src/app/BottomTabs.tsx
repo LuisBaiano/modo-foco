@@ -18,6 +18,18 @@ export type BottomTabParamList = {
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 
+const TAB_ICONS: Record<keyof BottomTabParamList, string> = {
+  Home: '🏠',
+  Habitos: '✅',
+  Estudos: '📚',
+  Tarefas: '📝',
+  Saude: '💪',
+};
+
+function TabIcon({ route }: { route: keyof BottomTabParamList }) {
+  return <Text style={styles.tabIcon}>{TAB_ICONS[route]}</Text>;
+}
+
 function ProfileHeaderButton({ navigation }: { navigation: NavigationProp<RootStackParamList> }) {
   return (
     <Pressable onPress={() => navigation.navigate('Profile')} hitSlop={8} style={styles.headerButton}>
@@ -29,10 +41,11 @@ function ProfileHeaderButton({ navigation }: { navigation: NavigationProp<RootSt
 function BottomTabs() {
   return (
     <Tab.Navigator
-      screenOptions={({ navigation }) => ({
+      screenOptions={({ navigation, route }) => ({
         headerRight: () => (
           <ProfileHeaderButton navigation={navigation.getParent() as NavigationProp<RootStackParamList>} />
         ),
+        tabBarIcon: () => <TabIcon route={route.name} />,
       })}>
       <Tab.Screen name="Home" component={DashboardScreen} />
       <Tab.Screen name="Habitos" component={HabitsScreen} options={{ title: 'Hábitos' }} />
@@ -48,6 +61,9 @@ const styles = StyleSheet.create({
     marginRight: 16,
   },
   headerButtonIcon: {
+    fontSize: 20,
+  },
+  tabIcon: {
     fontSize: 20,
   },
 });
