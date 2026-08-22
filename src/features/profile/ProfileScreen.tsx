@@ -1,9 +1,11 @@
 import { useState } from 'react';
-import { Button, StyleSheet, Text, View } from 'react-native';
+import { Button, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ACCENT_PRESETS, useTheme } from '../../app/ThemeContext';
 import FocusBlock from '../../native/FocusBlock';
 
 function ProfileScreen() {
   const [pingResult, setPingResult] = useState<string | null>(null);
+  const { accent, setAccent } = useTheme();
 
   const handlePing = async () => {
     try {
@@ -18,6 +20,25 @@ function ProfileScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>Perfil</Text>
       <Text style={styles.subtitle}>Em construção</Text>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionLabel}>Cor de destaque</Text>
+        <View style={styles.swatchRow}>
+          {ACCENT_PRESETS.map(preset => (
+            <Pressable
+              key={preset.value}
+              onPress={() => setAccent(preset.value)}
+              hitSlop={8}
+              style={[
+                styles.swatch,
+                { backgroundColor: preset.value },
+                accent === preset.value && styles.swatchSelected,
+              ]}>
+              {accent === preset.value && <Text style={styles.swatchCheck}>✓</Text>}
+            </Pressable>
+          ))}
+        </View>
+      </View>
 
       <View style={styles.testSection}>
         <Button title="Testar módulo nativo FocusBlock" onPress={handlePing} />
@@ -42,8 +63,37 @@ const styles = StyleSheet.create({
     fontSize: 14,
     opacity: 0.6,
   },
-  testSection: {
+  section: {
     marginTop: 32,
+    alignItems: 'center',
+  },
+  sectionLabel: {
+    fontSize: 13,
+    fontWeight: '600',
+    opacity: 0.6,
+    marginBottom: 12,
+  },
+  swatchRow: {
+    flexDirection: 'row',
+    gap: 14,
+  },
+  swatch: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  swatchSelected: {
+    borderWidth: 3,
+    borderColor: '#00000055',
+  },
+  swatchCheck: {
+    color: 'white',
+    fontWeight: '700',
+  },
+  testSection: {
+    marginTop: 40,
     alignItems: 'center',
     gap: 8,
   },

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import type { NativeStackNavigationProp, NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { useTheme } from '../../app/ThemeContext';
 import type { HabitsStackParamList } from './HabitsNavigator';
 import { type Frequency, createHabit, getHabit, updateHabit } from './habitsRepository';
 
@@ -11,6 +12,7 @@ function HabitFormScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<HabitsStackParamList>>();
   const route = useRoute<Props['route']>();
   const habitId = route.params?.habitId;
+  const { accent } = useTheme();
 
   const [name, setName] = useState('');
   const [frequency, setFrequency] = useState<Frequency>('daily');
@@ -40,7 +42,7 @@ function HabitFormScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Nome</Text>
+      <Text style={[styles.label, { color: accent }]}>Nome</Text>
       <TextInput
         style={styles.input}
         value={name}
@@ -49,47 +51,61 @@ function HabitFormScreen() {
         autoFocus
       />
 
-      <Text style={styles.label}>Frequência</Text>
+      <Text style={[styles.label, { color: accent }]}>Frequência</Text>
       <View style={styles.segmented}>
         <FrequencyOption
           label="Diário"
           selected={frequency === 'daily'}
+          accent={accent}
           onPress={() => setFrequency('daily')}
         />
         <FrequencyOption
           label="Semanal"
           selected={frequency === 'weekly'}
+          accent={accent}
           onPress={() => setFrequency('weekly')}
         />
       </View>
 
-      <Pressable style={[styles.saveButton, !name.trim() && styles.saveButtonDisabled]} onPress={handleSave} disabled={!name.trim()}>
+      <Pressable
+        style={[styles.saveButton, { backgroundColor: accent }, !name.trim() && styles.saveButtonDisabled]}
+        onPress={handleSave}
+        disabled={!name.trim()}>
         <Text style={styles.saveButtonText}>Salvar</Text>
       </Pressable>
     </View>
   );
 }
 
-function FrequencyOption({ label, selected, onPress }: { label: string; selected: boolean; onPress: () => void }) {
+function FrequencyOption({
+  label,
+  selected,
+  accent,
+  onPress,
+}: {
+  label: string;
+  selected: boolean;
+  accent: string;
+  onPress: () => void;
+}) {
   return (
-    <Pressable style={[styles.segmentedOption, selected && styles.segmentedOptionSelected]} onPress={onPress}>
-      <Text style={[styles.segmentedOptionText, selected && styles.segmentedOptionTextSelected]}>{label}</Text>
+    <Pressable
+      style={[styles.segmentedOption, selected && { backgroundColor: accent }]}
+      onPress={onPress}>
+      <Text style={[styles.segmentedOptionText, { color: selected ? 'white' : accent }]}>{label}</Text>
     </Pressable>
   );
 }
-
-const ACCENT = '#7c3aed';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#f5f3ff',
+    backgroundColor: '#f7f7fb',
   },
   label: {
     fontSize: 13,
     fontWeight: '700',
-    color: '#6d28d9',
     marginBottom: 10,
     marginTop: 20,
   },
@@ -112,19 +128,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     alignItems: 'center',
   },
-  segmentedOptionSelected: {
-    backgroundColor: ACCENT,
-  },
   segmentedOptionText: {
     fontWeight: '700',
-    color: '#6d28d9',
-  },
-  segmentedOptionTextSelected: {
-    color: 'white',
   },
   saveButton: {
     marginTop: 40,
-    backgroundColor: ACCENT,
     borderRadius: 16,
     paddingVertical: 16,
     alignItems: 'center',

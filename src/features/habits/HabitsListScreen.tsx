@@ -1,6 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import { useTheme } from '../../app/ThemeContext';
 import { useHabits } from './useHabits';
 import type { HabitsStackParamList } from './HabitsNavigator';
 import type { HabitWithTodayStatus } from './habitsRepository';
@@ -8,6 +9,7 @@ import type { HabitWithTodayStatus } from './habitsRepository';
 function HabitsListScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<HabitsStackParamList>>();
   const { habits, loading, toggle } = useHabits();
+  const { accent } = useTheme();
 
   return (
     <View style={styles.container}>
@@ -16,7 +18,12 @@ function HabitsListScreen() {
         keyExtractor={item => String(item.id)}
         contentContainerStyle={[styles.listContent, habits.length === 0 && styles.emptyContainer]}
         renderItem={({ item }) => (
-          <HabitRow item={item} onToggle={() => toggle(item.id)} onOpen={() => navigation.navigate('HabitDetail', { habitId: item.id })} />
+          <HabitRow
+            item={item}
+            accent={accent}
+            onToggle={() => toggle(item.id)}
+            onOpen={() => navigation.navigate('HabitDetail', { habitId: item.id })}
+          />
         )}
         ListEmptyComponent={
           !loading ? (
@@ -26,7 +33,9 @@ function HabitsListScreen() {
           ) : undefined
         }
       />
-      <Pressable style={styles.fab} onPress={() => navigation.navigate('HabitForm', undefined)}>
+      <Pressable
+        style={[styles.fab, { backgroundColor: accent, shadowColor: accent }]}
+        onPress={() => navigation.navigate('HabitForm', undefined)}>
         <Text style={styles.fabIcon}>+</Text>
       </Pressable>
     </View>
@@ -35,10 +44,12 @@ function HabitsListScreen() {
 
 function HabitRow({
   item,
+  accent,
   onToggle,
   onOpen,
 }: {
   item: HabitWithTodayStatus;
+  accent: string;
   onToggle: () => void;
   onOpen: () => void;
 }) {
@@ -52,13 +63,14 @@ function HabitRow({
       </Pressable>
       <Pressable style={styles.rowBody} onPress={onOpen}>
         <Text style={styles.rowTitle}>{item.name}</Text>
-        <Text style={styles.rowSubtitle}>{item.frequency === 'daily' ? 'Diário' : 'Semanal'}</Text>
+        <Text style={[styles.rowSubtitle, { color: accent }]}>
+          {item.frequency === 'daily' ? 'Diário' : 'Semanal'}
+        </Text>
       </Pressable>
     </View>
   );
 }
 
-const ACCENT = '#7c3aed';
 const SUCCESS = '#10b981';
 
 const styles = StyleSheet.create({
@@ -127,7 +139,6 @@ const styles = StyleSheet.create({
   },
   rowSubtitle: {
     fontSize: 13,
-    color: ACCENT,
     marginTop: 4,
     fontWeight: '600',
   },
@@ -138,11 +149,9 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: ACCENT,
     alignItems: 'center',
     justifyContent: 'center',
     elevation: 6,
-    shadowColor: ACCENT,
     shadowOpacity: 0.4,
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 4 },
