@@ -1,11 +1,12 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import type { NavigationProp } from '@react-navigation/native';
-import { Pressable, StyleSheet, Text } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 import DashboardScreen from '../features/dashboard/DashboardScreen';
 import HabitsScreen from '../features/habits/HabitsScreen';
 import StudyScreen from '../features/study/StudyScreen';
 import TasksScreen from '../features/tasks/TasksScreen';
 import HealthScreen from '../features/health/HealthScreen';
+import ProfileHeaderButton from './ProfileHeaderButton';
 import type { RootStackParamList } from './RootNavigator';
 
 export type BottomTabParamList = {
@@ -30,14 +31,6 @@ function TabIcon({ route }: { route: keyof BottomTabParamList }) {
   return <Text style={styles.tabIcon}>{TAB_ICONS[route]}</Text>;
 }
 
-function ProfileHeaderButton({ navigation }: { navigation: NavigationProp<RootStackParamList> }) {
-  return (
-    <Pressable onPress={() => navigation.navigate('Profile')} hitSlop={8} style={styles.headerButton}>
-      <Text style={styles.headerButtonIcon}>👤</Text>
-    </Pressable>
-  );
-}
-
 function BottomTabs() {
   return (
     <Tab.Navigator
@@ -57,12 +50,6 @@ function BottomTabs() {
 }
 
 const styles = StyleSheet.create({
-  headerButton: {
-    marginRight: 16,
-  },
-  headerButtonIcon: {
-    fontSize: 20,
-  },
   tabIcon: {
     fontSize: 20,
   },
