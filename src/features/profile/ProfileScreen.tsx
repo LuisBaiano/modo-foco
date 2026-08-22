@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Button, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Button, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import ColorPicker from '../../app/ColorPicker';
 import { ACCENT_PRESETS, useTheme } from '../../app/ThemeContext';
 import FocusBlock from '../../native/FocusBlock';
 
@@ -17,7 +18,7 @@ function ProfileScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Perfil</Text>
       <Text style={styles.subtitle}>Em construção</Text>
 
@@ -38,21 +39,25 @@ function ProfileScreen() {
             </Pressable>
           ))}
         </View>
+
+        <Text style={[styles.sectionLabel, styles.customLabel]}>Cor personalizada</Text>
+        <ColorPicker value={accent} onChange={setAccent} />
       </View>
 
       <View style={styles.testSection}>
         <Button title="Testar módulo nativo FocusBlock" onPress={handlePing} />
         {pingResult != null && <Text style={styles.pingResult}>{pingResult}</Text>}
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    paddingVertical: 32,
   },
   title: {
     fontSize: 24,
@@ -72,6 +77,9 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     opacity: 0.6,
     marginBottom: 12,
+  },
+  customLabel: {
+    marginTop: 28,
   },
   swatchRow: {
     flexDirection: 'row',
