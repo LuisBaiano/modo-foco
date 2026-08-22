@@ -94,3 +94,8 @@ export const userXp = sqliteTable('user_xp', {
   longestStreak: integer('longest_streak').notNull().default(0),
   lastActiveDate: text('last_active_date'),
 });
+
+export const appSettings = sqliteTable('app_settings', {
+  id: integer('id').primaryKey(),
+  accentColor: text('accent_color').notNull(),
+});
