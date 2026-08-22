@@ -1,1 +1,9 @@
-[]
+[
+  {
+    "branch": "release/v0.4.0",
+    "tag": "v0.4.0",
+    "title": "v0.4.0 — Tarefas & Projetos",
+    "notes": "Segundo módulo funcional: Tarefas & Projetos (UC09-12 da spec).\n\n- Criar tarefa (título, prioridade, prazo rápido hoje/amanhã/sem prazo, projeto opcional)\n- Concluir/reabrir tarefa direto na lista, ordenada por prioridade e prazo\n- Badges de prioridade, projeto e prazo (com aviso de atrasada)\n- Projetos: criar com cor e descrição, progresso calculado automaticamente a partir das tarefas vinculadas\n- Excluir projeto não apaga as tarefas, só desvincula\n\nMesmo padrão de arquitetura do módulo Hábitos (repository + hook + navegação aninhada), agora usando a cor de destaque personalizável em toda a interface.\n\nValidado ponta a ponta em dispositivo Android real.",
+    "publishAt": "2026-08-30T22:47:00Z"
+  }
+]
