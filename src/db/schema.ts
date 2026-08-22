@@ -1,4 +1,4 @@
-import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { integer, sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core';
 
 export const habits = sqliteTable('habits', {
   id: integer('id').primaryKey({ autoIncrement: true }),
@@ -8,14 +8,18 @@ export const habits = sqliteTable('habits', {
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
 });
 
-export const habitLogs = sqliteTable('habit_logs', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
-  habitId: integer('habit_id')
-    .notNull()
-    .references(() => habits.id),
-  date: text('date').notNull(),
-  completed: integer('completed', { mode: 'boolean' }).notNull(),
-});
+export const habitLogs = sqliteTable(
+  'habit_logs',
+  {
+    id: integer('id').primaryKey({ autoIncrement: true }),
+    habitId: integer('habit_id')
+      .notNull()
+      .references(() => habits.id),
+    date: text('date').notNull(),
+    completed: integer('completed', { mode: 'boolean' }).notNull(),
+  },
+  table => [uniqueIndex('habit_logs_habit_id_date_unique').on(table.habitId, table.date)],
+);
 
 export const projects = sqliteTable('projects', {
   id: integer('id').primaryKey({ autoIncrement: true }),

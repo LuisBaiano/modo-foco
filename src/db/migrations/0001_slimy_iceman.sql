@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX `habit_logs_habit_id_date_unique` ON `habit_logs` (`habit_id`,`date`);
