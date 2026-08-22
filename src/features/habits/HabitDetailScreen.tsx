@@ -64,35 +64,43 @@ function HabitDetailScreen() {
   );
 }
 
+const ACCENT = '#7c3aed';
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    padding: 20,
+    backgroundColor: '#f5f3ff',
   },
   title: {
-    fontSize: 22,
-    fontWeight: '700',
+    fontSize: 24,
+    fontWeight: '800',
+    color: '#1f2937',
   },
   sectionLabel: {
     fontSize: 13,
-    fontWeight: '600',
-    opacity: 0.7,
-    marginTop: 24,
-    marginBottom: 12,
+    fontWeight: '700',
+    color: '#6d28d9',
+    marginTop: 28,
+    marginBottom: 14,
   },
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 6,
+    gap: 8,
+    backgroundColor: 'white',
+    padding: 16,
+    borderRadius: 20,
+    elevation: 1,
   },
   dot: {
-    width: 20,
-    height: 20,
-    borderRadius: 4,
-    backgroundColor: '#00000022',
+    width: 22,
+    height: 22,
+    borderRadius: 7,
+    backgroundColor: '#ede9fe',
   },
   dotDone: {
-    backgroundColor: '#2e7d32',
+    backgroundColor: '#10b981',
   },
   actions: {
     flexDirection: 'row',
@@ -101,20 +109,21 @@ const styles = StyleSheet.create({
   },
   actionButton: {
     flex: 1,
-    paddingVertical: 12,
-    borderRadius: 8,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: '#00000044',
+    paddingVertical: 14,
+    borderRadius: 16,
+    backgroundColor: 'white',
     alignItems: 'center',
+    elevation: 1,
   },
   actionButtonText: {
-    fontWeight: '600',
+    fontWeight: '700',
+    color: ACCENT,
   },
   deleteButton: {
-    borderColor: '#c62828',
+    backgroundColor: '#fef2f2',
   },
   deleteButtonText: {
-    color: '#c62828',
+    color: '#dc2626',
   },
 });
 

@@ -14,7 +14,7 @@ function HabitsListScreen() {
       <FlatList
         data={habits}
         keyExtractor={item => String(item.id)}
-        contentContainerStyle={habits.length === 0 && styles.emptyContainer}
+        contentContainerStyle={[styles.listContent, habits.length === 0 && styles.emptyContainer]}
         renderItem={({ item }) => (
           <HabitRow item={item} onToggle={() => toggle(item.id)} onOpen={() => navigation.navigate('HabitDetail', { habitId: item.id })} />
         )}
@@ -43,7 +43,7 @@ function HabitRow({
   onOpen: () => void;
 }) {
   return (
-    <View style={styles.row}>
+    <View style={[styles.card, item.completedToday && styles.cardDone]}>
       <Pressable
         onPress={onToggle}
         hitSlop={8}
@@ -58,9 +58,18 @@ function HabitRow({
   );
 }
 
+const ACCENT = '#7c3aed';
+const SUCCESS = '#10b981';
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#f7f7fb',
+  },
+  listContent: {
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 100,
   },
   emptyContainer: {
     flexGrow: 1,
@@ -73,27 +82,36 @@ const styles = StyleSheet.create({
   emptyText: {
     opacity: 0.6,
   },
-  row: {
+  card: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#00000022',
+    backgroundColor: 'white',
+    borderRadius: 20,
+    paddingHorizontal: 18,
+    paddingVertical: 18,
+    marginBottom: 12,
+    elevation: 2,
+    shadowColor: '#4c1d95',
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 3 },
+  },
+  cardDone: {
+    backgroundColor: '#ecfdf5',
   },
   checkbox: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     borderWidth: 2,
-    borderColor: '#00000044',
+    borderColor: '#d1d5db',
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 12,
+    marginRight: 16,
   },
   checkboxDone: {
-    backgroundColor: '#2e7d32',
-    borderColor: '#2e7d32',
+    backgroundColor: SUCCESS,
+    borderColor: SUCCESS,
   },
   checkmark: {
     color: 'white',
@@ -103,30 +121,36 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   rowTitle: {
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 17,
+    fontWeight: '700',
+    color: '#1f2937',
   },
   rowSubtitle: {
     fontSize: 13,
-    opacity: 0.6,
-    marginTop: 2,
+    color: ACCENT,
+    marginTop: 4,
+    fontWeight: '600',
   },
   fab: {
     position: 'absolute',
-    right: 20,
-    bottom: 20,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: '#1565c0',
+    right: 24,
+    bottom: 24,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: ACCENT,
     alignItems: 'center',
     justifyContent: 'center',
-    elevation: 4,
+    elevation: 6,
+    shadowColor: ACCENT,
+    shadowOpacity: 0.4,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 4 },
   },
   fabIcon: {
     color: 'white',
-    fontSize: 28,
-    lineHeight: 30,
+    fontSize: 30,
+    lineHeight: 32,
   },
 });
 

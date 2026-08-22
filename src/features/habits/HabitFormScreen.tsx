@@ -78,54 +78,57 @@ function FrequencyOption({ label, selected, onPress }: { label: string; selected
   );
 }
 
+const ACCENT = '#7c3aed';
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    padding: 20,
+    backgroundColor: '#f5f3ff',
   },
   label: {
     fontSize: 13,
-    fontWeight: '600',
-    opacity: 0.7,
-    marginBottom: 8,
-    marginTop: 16,
+    fontWeight: '700',
+    color: '#6d28d9',
+    marginBottom: 10,
+    marginTop: 20,
   },
   input: {
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: '#00000044',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
+    backgroundColor: 'white',
+    borderRadius: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
     fontSize: 16,
+    elevation: 1,
   },
   segmented: {
     flexDirection: 'row',
-    gap: 8,
+    gap: 10,
   },
   segmentedOption: {
     flex: 1,
-    paddingVertical: 10,
-    borderRadius: 8,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: '#00000044',
+    paddingVertical: 14,
+    borderRadius: 16,
+    backgroundColor: 'white',
     alignItems: 'center',
   },
   segmentedOptionSelected: {
-    backgroundColor: '#1565c0',
-    borderColor: '#1565c0',
+    backgroundColor: ACCENT,
   },
   segmentedOptionText: {
-    fontWeight: '600',
+    fontWeight: '700',
+    color: '#6d28d9',
   },
   segmentedOptionTextSelected: {
     color: 'white',
   },
   saveButton: {
-    marginTop: 32,
-    backgroundColor: '#1565c0',
-    borderRadius: 8,
-    paddingVertical: 14,
+    marginTop: 40,
+    backgroundColor: ACCENT,
+    borderRadius: 16,
+    paddingVertical: 16,
     alignItems: 'center',
+    elevation: 3,
   },
   saveButtonDisabled: {
     opacity: 0.4,
