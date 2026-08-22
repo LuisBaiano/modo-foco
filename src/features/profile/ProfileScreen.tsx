@@ -4,6 +4,7 @@ import ColorPicker from '../../app/ColorPicker';
 import { ACCENT_PRESETS, useTheme } from '../../app/ThemeContext';
 import FocusBlock from '../../native/FocusBlock';
 
+/** Tela de Perfil: seleção de cor de destaque + teste do módulo nativo. Ainda sem XP/conquistas de verdade. */
 function ProfileScreen() {
   const [pingResult, setPingResult] = useState<string | null>(null);
   const { accent, setAccent } = useTheme();

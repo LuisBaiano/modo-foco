@@ -14,6 +14,11 @@ export type HabitsStackParamList = {
 
 const Stack = createNativeStackNavigator<HabitsStackParamList>();
 
+/**
+ * Stack aninhado da aba Hábitos (lista → formulário/detalhe). O botão de
+ * perfil usa navigation.getParent().getParent() porque essa navegação está
+ * dois níveis abaixo do stack raiz: raiz → BottomTabs → este stack.
+ */
 function HabitsNavigator() {
   return (
     <Stack.Navigator>

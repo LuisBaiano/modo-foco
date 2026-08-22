@@ -8,6 +8,7 @@ import { type Frequency, createHabit, getHabit, updateHabit } from './habitsRepo
 
 type Props = NativeStackScreenProps<HabitsStackParamList, 'HabitForm'>;
 
+/** Formulário de criar/editar hábito. Sem habitId na rota = criação. */
 function HabitFormScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<HabitsStackParamList>>();
   const route = useRoute<Props['route']>();

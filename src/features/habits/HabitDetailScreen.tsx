@@ -13,6 +13,7 @@ import {
 
 type Props = NativeStackScreenProps<HabitsStackParamList, 'HabitDetail'>;
 
+/** Detalhe do hábito: grade de consistência dos últimos 30 dias + editar/excluir. */
 function HabitDetailScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<HabitsStackParamList>>();
   const route = useRoute<Props['route']>();

@@ -6,13 +6,15 @@ import migrations from './migrations/migrations';
 
 const opSqliteConnection = open({ name: 'modofoco.db' });
 
+/** Instância do Drizzle sobre o banco local (op-sqlite). */
 export const db = drizzle(opSqliteConnection, { schema });
 
 /**
- * Applies pending migrations by hand instead of drizzle's op-sqlite migrate()
- * helper, which relies on session.transaction() — patched in node_modules (see
- * patches/drizzle-orm+0.45.2.patch) but kept isolated here in case that patch
- * ever needs to be reverted.
+ * Aplica as migrations pendentes uma a uma, na mão, em vez de usar o
+ * migrate() do drizzle-orm/op-sqlite — esse helper depende de
+ * session.transaction(), que foi corrigido via patch-package (ver
+ * patches/drizzle-orm+0.45.2.patch), mas manter a aplicação manual aqui
+ * é uma segurança extra caso o patch precise ser revertido.
  */
 export async function runMigrations() {
   await db.run(sql`CREATE TABLE IF NOT EXISTS __drizzle_migrations (

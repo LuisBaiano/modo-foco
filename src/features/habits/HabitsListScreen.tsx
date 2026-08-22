@@ -6,6 +6,7 @@ import { useHabits } from './useHabits';
 import type { HabitsStackParamList } from './HabitsNavigator';
 import type { HabitWithTodayStatus } from './habitsRepository';
 
+/** Tela principal da aba Hábitos: lista com toggle do dia + botão de criar. */
 function HabitsListScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<HabitsStackParamList>>();
   const { habits, loading, toggle } = useHabits();

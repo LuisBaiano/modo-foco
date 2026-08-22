@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
 import { getAccentColor, setAccentColor } from '../features/settings/settingsRepository';
 
+/** Paleta de cores de destaque pré-definidas, oferecidas na tela de Perfil. */
 export const ACCENT_PRESETS = [
   { name: 'Violeta', value: '#7c3aed' },
   { name: 'Azul', value: '#2563eb' },
@@ -13,12 +14,15 @@ export const ACCENT_PRESETS = [
 const DEFAULT_ACCENT = ACCENT_PRESETS[0].value;
 
 type ThemeContextValue = {
+  /** Cor de destaque atual, em hex. */
   accent: string;
+  /** Atualiza a cor de destaque; persiste no banco com debounce. */
   setAccent: (color: string) => void;
 };
 
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 
+/** Provedor de tema do app. Carrega a cor salva do banco e a disponibiliza via useTheme(). */
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [accent, setAccentState] = useState<string>(DEFAULT_ACCENT);
   const saveTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -31,10 +35,14 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
+  /**
+   * Atualiza o estado imediatamente (pro preview ao vivo do seletor de cor)
+   * mas grava no banco com debounce de 300ms — arrastar o seletor dispara
+   * essa função a cada pixel de movimento, e sem o debounce cada chamada
+   * viraria uma escrita no SQLite.
+   */
   const setAccent = useCallback((color: string) => {
     setAccentState(color);
-    // dragging the color picker fires this on every pixel of movement — debounce
-    // the actual DB write so it doesn't flood the SQLite connection mid-gesture.
     if (saveTimeout.current) {
       clearTimeout(saveTimeout.current);
     }
@@ -46,6 +54,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   return <ThemeContext.Provider value={{ accent, setAccent }}>{children}</ThemeContext.Provider>;
 }
 
+/** Hook de acesso ao tema atual. Precisa estar dentro de um ThemeProvider. */
 export function useTheme(): ThemeContextValue {
   const ctx = useContext(ThemeContext);
   if (!ctx) {

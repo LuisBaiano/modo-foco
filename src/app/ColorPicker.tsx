@@ -10,6 +10,13 @@ function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value));
 }
 
+/**
+ * Converte HSV pra hex.
+ * @param h matiz em graus (0-360)
+ * @param s saturação (0-1)
+ * @param v brilho/valor (0-1)
+ * @returns cor no formato #rrggbb
+ */
 function hsvToHex(h: number, s: number, v: number): string {
   const c = v * s;
   const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
@@ -40,6 +47,10 @@ function hsvToHex(h: number, s: number, v: number): string {
   return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
 }
 
+/**
+ * Converte hex pra HSV — inverso de hsvToHex().
+ * @param hex cor no formato #rrggbb
+ */
 function hexToHsv(hex: string): { h: number; s: number; v: number } {
   const r = parseInt(hex.slice(1, 3), 16) / 255;
   const g = parseInt(hex.slice(3, 5), 16) / 255;
@@ -65,10 +76,16 @@ function hexToHsv(hex: string): { h: number; s: number; v: number } {
 }
 
 type Props = {
+  /** Cor atual, em hex. */
   value: string;
+  /** Chamado a cada movimento de arraste, com a nova cor em hex. */
   onChange: (hex: string) => void;
 };
 
+/**
+ * Seletor de cor estilo Photoshop: quadrado de saturação/brilho + barra de
+ * matiz, ambos arrastáveis. Sem lib de gestos — PanResponder puro do RN.
+ */
 function ColorPicker({ value, onChange }: Props) {
   const initial = hexToHsv(value);
   const [hue, setHue] = useState(initial.h);
@@ -100,6 +117,8 @@ function ColorPicker({ value, onChange }: Props) {
     },
     [hue, emit],
   );
+  // PanResponder é criado uma única vez (via useRef abaixo), então guardamos
+  // o handler mais recente numa ref pra ele nunca ficar com uma closure velha.
   const handleSquareTouchRef = useRef(handleSquareTouch);
   handleSquareTouchRef.current = handleSquareTouch;
 

@@ -31,6 +31,7 @@ function TabIcon({ route }: { route: keyof BottomTabParamList }) {
   return <Text style={styles.tabIcon}>{TAB_ICONS[route]}</Text>;
 }
 
+/** Navegação de abas do app. Abas com fluxo próprio (Hábitos, Tarefas) usam um stack aninhado. */
 function BottomTabs() {
   return (
     <Tab.Navigator

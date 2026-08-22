@@ -8,6 +8,7 @@ export type HabitWithTodayStatus = {
   id: number;
   name: string;
   frequency: Frequency;
+  /** Se já foi marcado como feito hoje. */
   completedToday: boolean;
 };
 
@@ -17,6 +18,7 @@ function todayISODate(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
+/** Lista todos os hábitos com o status de hoje, ordenados por data de criação. */
 export async function listHabitsWithTodayStatus(): Promise<HabitWithTodayStatus[]> {
   const today = todayISODate();
   const rows = await db
@@ -55,11 +57,13 @@ export async function updateHabit(habitId: number, input: { name: string; freque
   await db.update(habits).set({ name: input.name, frequency: input.frequency }).where(eq(habits.id, habitId));
 }
 
+/** Exclui o hábito e todo o seu histórico de logs. */
 export async function deleteHabit(habitId: number) {
   await db.delete(habitLogs).where(eq(habitLogs.habitId, habitId));
   await db.delete(habits).where(eq(habits.id, habitId));
 }
 
+/** Alterna feito/não-feito hoje — insere o log do dia se ainda não existir, senão inverte. */
 export async function toggleHabitToday(habitId: number) {
   const today = todayISODate();
   const [existing] = await db
@@ -74,6 +78,11 @@ export async function toggleHabitToday(habitId: number) {
   }
 }
 
+/**
+ * Histórico de consistência dos últimos N dias, incluindo os dias sem log
+ * (marcados como não-feito) — é o que alimenta a grade de quadradinhos da
+ * tela de detalhe.
+ */
 export async function getHabitHistory(habitId: number, days = 30): Promise<HabitHistoryDay[]> {
   const logs = await db.select().from(habitLogs).where(eq(habitLogs.habitId, habitId));
   const logsByDate = new Map(logs.map(log => [log.date, log.completed]));

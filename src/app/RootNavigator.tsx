@@ -10,6 +10,7 @@ export type RootStackParamList = {
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
+/** Stack raiz: as abas (Tabs) e o Perfil, empurrado por cima via ícone no header. */
 function RootNavigator() {
   return (
     <NavigationContainer>
