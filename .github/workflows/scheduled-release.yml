@@ -1,0 +1,22 @@
+name: Scheduled Release
+
+on:
+  schedule:
+    - cron: '0 * * * *' # a cada hora, checa se alguma release da fila já venceu
+  workflow_dispatch: {} # permite rodar manualmente pra testar
+
+permissions:
+  contents: write
+
+jobs:
+  publish-due:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Publicar releases agendadas que já venceram
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: bash .github/scripts/publish-scheduled-releases.sh
