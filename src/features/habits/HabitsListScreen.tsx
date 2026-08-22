@@ -1,6 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import HeroIcon from '../../app/HeroIcon';
 import { useTheme } from '../../app/ThemeContext';
 import { useHabits } from './useHabits';
 import type { HabitsStackParamList } from './HabitsNavigator';
@@ -37,7 +38,7 @@ function HabitsListScreen() {
       <Pressable
         style={[styles.fab, { backgroundColor: accent, shadowColor: accent }]}
         onPress={() => navigation.navigate('HabitForm', undefined)}>
-        <Text style={styles.fabIcon}>+</Text>
+        <HeroIcon name="plus" size={26} color="white" />
       </Pressable>
     </View>
   );
@@ -60,7 +61,7 @@ function HabitRow({
         onPress={onToggle}
         hitSlop={8}
         style={[styles.checkbox, item.completedToday && styles.checkboxDone]}>
-        {item.completedToday && <Text style={styles.checkmark}>✓</Text>}
+        {item.completedToday && <HeroIcon name="check" size={16} color="white" />}
       </Pressable>
       <Pressable style={styles.rowBody} onPress={onOpen}>
         <Text style={styles.rowTitle}>{item.name}</Text>
@@ -126,10 +127,6 @@ const styles = StyleSheet.create({
     backgroundColor: SUCCESS,
     borderColor: SUCCESS,
   },
-  checkmark: {
-    color: 'white',
-    fontWeight: '700',
-  },
   rowBody: {
     flex: 1,
   },
@@ -156,11 +153,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.4,
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 4 },
-  },
-  fabIcon: {
-    color: 'white',
-    fontSize: 30,
-    lineHeight: 32,
   },
 });
 

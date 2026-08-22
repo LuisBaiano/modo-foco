@@ -1,5 +1,6 @@
 import type { NavigationProp } from '@react-navigation/native';
-import { Pressable, StyleSheet, Text } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
+import HeroIcon from './HeroIcon';
 import type { RootStackParamList } from './RootNavigator';
 
 /**
@@ -10,7 +11,7 @@ import type { RootStackParamList } from './RootNavigator';
 function ProfileHeaderButton({ navigation }: { navigation: NavigationProp<RootStackParamList> }) {
   return (
     <Pressable onPress={() => navigation.navigate('Profile')} hitSlop={8} style={styles.headerButton}>
-      <Text style={styles.headerButtonIcon}>👤</Text>
+      <HeroIcon name="userCircle" size={22} color="#374151" />
     </Pressable>
   );
 }
@@ -18,9 +19,6 @@ function ProfileHeaderButton({ navigation }: { navigation: NavigationProp<RootSt
 const styles = StyleSheet.create({
   headerButton: {
     marginRight: 16,
-  },
-  headerButtonIcon: {
-    fontSize: 20,
   },
 });
 

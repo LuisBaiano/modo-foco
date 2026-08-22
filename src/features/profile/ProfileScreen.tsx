@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Button, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import ColorPicker from '../../app/ColorPicker';
+import HeroIcon from '../../app/HeroIcon';
 import { ACCENT_PRESETS, useTheme } from '../../app/ThemeContext';
 import FocusBlock from '../../native/FocusBlock';
 
@@ -36,7 +37,7 @@ function ProfileScreen() {
                 { backgroundColor: preset.value },
                 accent === preset.value && styles.swatchSelected,
               ]}>
-              {accent === preset.value && <Text style={styles.swatchCheck}>✓</Text>}
+              {accent === preset.value && <HeroIcon name="check" size={18} color="white" />}
             </Pressable>
           ))}
         </View>
@@ -96,10 +97,6 @@ const styles = StyleSheet.create({
   swatchSelected: {
     borderWidth: 3,
     borderColor: '#00000055',
-  },
-  swatchCheck: {
-    color: 'white',
-    fontWeight: '700',
   },
   testSection: {
     marginTop: 40,

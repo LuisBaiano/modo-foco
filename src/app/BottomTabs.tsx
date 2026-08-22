@@ -1,11 +1,11 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import type { NavigationProp } from '@react-navigation/native';
-import { StyleSheet, Text } from 'react-native';
 import DashboardScreen from '../features/dashboard/DashboardScreen';
 import HabitsNavigator from '../features/habits/HabitsNavigator';
 import StudyScreen from '../features/study/StudyScreen';
 import TasksScreen from '../features/tasks/TasksScreen';
 import HealthScreen from '../features/health/HealthScreen';
+import HeroIcon, { type IconName } from './HeroIcon';
 import ProfileHeaderButton from './ProfileHeaderButton';
 import type { RootStackParamList } from './RootNavigator';
 
@@ -19,17 +19,13 @@ export type BottomTabParamList = {
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 
-const TAB_ICONS: Record<keyof BottomTabParamList, string> = {
-  Home: '🏠',
-  Habitos: '✅',
-  Estudos: '📚',
-  Tarefas: '📝',
-  Saude: '💪',
+const TAB_ICON_NAMES: Record<keyof BottomTabParamList, IconName> = {
+  Home: 'home',
+  Habitos: 'checkCircle',
+  Estudos: 'bookOpen',
+  Tarefas: 'clipboardDocumentList',
+  Saude: 'heart',
 };
-
-function TabIcon({ route }: { route: keyof BottomTabParamList }) {
-  return <Text style={styles.tabIcon}>{TAB_ICONS[route]}</Text>;
-}
 
 /** Navegação de abas do app. Abas com fluxo próprio (Hábitos, Tarefas) usam um stack aninhado. */
 function BottomTabs() {
@@ -39,7 +35,9 @@ function BottomTabs() {
         headerRight: () => (
           <ProfileHeaderButton navigation={navigation.getParent() as NavigationProp<RootStackParamList>} />
         ),
-        tabBarIcon: () => <TabIcon route={route.name} />,
+        tabBarIcon: ({ color }) => (
+          <HeroIcon name={TAB_ICON_NAMES[route.name as keyof BottomTabParamList]} size={22} color={color} />
+        ),
       })}>
       <Tab.Screen name="Home" component={DashboardScreen} />
       <Tab.Screen
@@ -53,11 +51,5 @@ function BottomTabs() {
     </Tab.Navigator>
   );
 }
-
-const styles = StyleSheet.create({
-  tabIcon: {
-    fontSize: 20,
-  },
-});
 
 export default BottomTabs;
