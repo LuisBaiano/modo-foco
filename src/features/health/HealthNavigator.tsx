@@ -14,7 +14,7 @@ export type HealthStackParamList = {
 
 const Stack = createNativeStackNavigator<HealthStackParamList>();
 
-/** Stack aninhado da aba Saúde: início (água, humor, resumo) e os formulários de registro. */
+/** Stack aninhado da aba Saúde: início (água, resumo) e os formulários de registro. */
 function HealthNavigator() {
   return (
     <Stack.Navigator>

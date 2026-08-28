@@ -64,6 +64,13 @@
       "when": 1787430000000,
       "tag": "0008_remove_projects_add_tags",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "6",
+      "when": 1787431000000,
+      "tag": "0009_remove_mood",
+      "breakpoints": true
     }
   ]
 }

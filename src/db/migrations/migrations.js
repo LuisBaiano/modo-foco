@@ -10,6 +10,7 @@ import m0005 from './0005_dizzy_donald_blake.sql';
 import m0006 from './0006_furry_catseye.sql';
 import m0007 from './0007_nebulous_spacker_dave.sql';
 import m0008 from './0008_remove_projects_add_tags.sql';
+import m0009 from './0009_remove_mood.sql';
 
   export default {
     journal,
@@ -22,6 +23,7 @@ m0004,
 m0005,
 m0006,
 m0007,
-m0008
+m0008,
+m0009
     }
   }

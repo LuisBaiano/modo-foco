@@ -7,10 +7,8 @@ import {
   deleteWorkouts,
   getRecentMeals,
   getRecentWorkouts,
-  getTodayMood,
   getTodayWaterGlasses,
   getWeekSummary,
-  setTodayMood,
 } from './healthRepository';
 import {
   getWaterGlassMl,
@@ -31,12 +29,10 @@ export function useHealth() {
   const [waterGlasses, setWaterGlasses] = useState(0);
   const [waterGlassMl, setWaterGlassMlState] = useState(250);
   const [waterReminderIntervalHours, setWaterReminderIntervalHoursState] = useState(3);
-  const [mood, setMood] = useState<number | null>(null);
   const [weekSummary, setWeekSummary] = useState<WeekSummary>({
     workoutMinutes: 0,
     workoutCount: 0,
     waterGlasses: 0,
-    averageMood: null,
   });
   const [recentWorkouts, setRecentWorkouts] = useState<WorkoutLog[]>([]);
   const [recentMeals, setRecentMeals] = useState<MealLog[]>([]);
@@ -44,11 +40,10 @@ export function useHealth() {
   const refresh = useCallback(async () => {
     setLoading(true);
     try {
-      const [water, glassMl, intervalHours, todayMood, summary, workouts, meals] = await Promise.all([
+      const [water, glassMl, intervalHours, summary, workouts, meals] = await Promise.all([
         getTodayWaterGlasses(),
         getWaterGlassMl(),
         getWaterReminderIntervalHours(),
-        getTodayMood(),
         getWeekSummary(),
         getRecentWorkouts(),
         getRecentMeals(),
@@ -56,7 +51,6 @@ export function useHealth() {
       setWaterGlasses(water);
       setWaterGlassMlState(glassMl);
       setWaterReminderIntervalHoursState(intervalHours);
-      setMood(todayMood);
       setWeekSummary(summary);
       setRecentWorkouts(workouts);
       setRecentMeals(meals);
@@ -76,14 +70,6 @@ export function useHealth() {
     emitCelebration(reward);
     await refresh();
   }, [refresh]);
-
-  const selectMood = useCallback(
-    async (level: number) => {
-      await setTodayMood(level);
-      await refresh();
-    },
-    [refresh],
-  );
 
   const updateWaterGlassMl = useCallback(
     async (ml: number) => {
@@ -123,13 +109,11 @@ export function useHealth() {
     waterGlasses,
     waterGlassMl,
     waterReminderIntervalHours,
-    mood,
     weekSummary,
     recentWorkouts,
     recentMeals,
     refresh,
     addWater,
-    selectMood,
     updateWaterGlassMl,
     updateWaterReminderIntervalHours,
     removeWorkouts,
