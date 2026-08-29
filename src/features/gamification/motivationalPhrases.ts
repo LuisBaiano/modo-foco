@@ -1,9 +1,9 @@
 /**
  * Banco de frases motivacionais. Tom Duolingo: caloroso quando o usuário
  * aparece, agressivo quando ele está prestes a falhar. `CELEBRATION` é usado
- * hoje (após ganhar XP); `STREAK_WARNING` e `STREAK_BROKEN` ficam prontas
- * pra Fase 4 (notificações), mas `STREAK_BROKEN` já é usada aqui quando uma
- * streak quebra no mesmo instante em que o usuário volta a agir.
+ * após ganhar XP; `STREAK_WARNING` alimenta o aviso de streak em risco
+ * (`streakReminder.ts`); `STREAK_BROKEN` é usada aqui mesmo, quando uma
+ * streak quebra no instante em que o usuário volta a agir.
  */
 
 export const CELEBRATION_PHRASES = [
@@ -29,22 +29,27 @@ export const CELEBRATION_PHRASES = [
   'De novo, e de novo.',
 ] as const;
 
+function plural(days: number): string {
+  return days === 1 ? 'dia' : 'dias';
+}
+
+/** Cada função recebe o streak atual (sempre > 0 quando chamada) pra deixar o aviso pessoal, não genérico. */
 export const STREAK_WARNING_PHRASES = [
-  'Seu streak está prestes a morrer 💀',
-  'Faltam poucas horas pra virar o dia — e sua sequência.',
-  'Não deixa hoje escapar.',
-  'Sua sequência está por um fio.',
-  'Amanhã ela já era, se você não agir agora.',
-  'Você não vai deixar tudo isso ir embora, vai?',
-  'A meia-noite não espera ninguém.',
-  'Últimas horas pra manter a sequência viva.',
-  'Ainda dá tempo. Ainda.',
-  'Sua streak está pedindo socorro.',
-  'Um dia sem ação e ela zera.',
-  'Não foi fácil chegar até aqui pra perder assim.',
-  'O relógio está correndo contra sua sequência.',
-  'Ela sobrevive hoje se você aparecer.',
-  'Não vacila agora.',
+  (streak: number) => `Seu streak de ${streak} ${plural(streak)} está prestes a morrer 💀`,
+  () => 'Faltam poucas horas pra virar o dia — e sua sequência.',
+  () => 'Não deixa hoje escapar.',
+  (streak: number) => `Sua sequência de ${streak} ${plural(streak)} está por um fio.`,
+  (streak: number) => `${streak} ${plural(streak)} de esforço, e amanhã já era se você não agir agora.`,
+  (streak: number) => `Você não vai deixar ${streak} ${plural(streak)} irem embora, vai?`,
+  () => 'A meia-noite não espera ninguém.',
+  () => 'Últimas horas pra manter a sequência viva.',
+  () => 'Ainda dá tempo. Ainda.',
+  () => 'Sua streak está pedindo socorro.',
+  (streak: number) => `Um dia sem ação e seus ${streak} ${plural(streak)} zeram.`,
+  (streak: number) => `Não foi fácil chegar a ${streak} ${plural(streak)} pra perder assim.`,
+  () => 'O relógio está correndo contra sua sequência.',
+  () => 'Ela sobrevive hoje se você aparecer.',
+  () => 'Não vacila agora.',
 ] as const;
 
 export const STREAK_BROKEN_PHRASES = [
@@ -73,8 +78,8 @@ export function randomCelebrationPhrase(): string {
   return randomFrom(CELEBRATION_PHRASES);
 }
 
-export function randomStreakWarningPhrase(): string {
-  return randomFrom(STREAK_WARNING_PHRASES);
+export function randomStreakWarningPhrase(streakDays: number): string {
+  return randomFrom(STREAK_WARNING_PHRASES)(streakDays);
 }
 
 export function randomStreakBrokenPhrase(): string {
