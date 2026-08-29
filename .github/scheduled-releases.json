@@ -73,7 +73,7 @@
     "branch": "release/v0.14.0",
     "tag": "v0.14.0",
     "title": "v0.14.0 — Aviso de streak mais afiado + ícone novo",
-    "notes": "Duas coisas nessa: deixei o aviso de sequência em risco mais no estilo Duolingo mesmo — agora são dois avisos, um às 20h (\"ainda dá tempo\") e outro às 22h30, esse último com contagem regressiva real até meia-noite. As mensagens passaram a citar o número de dias da sua sequência direto no texto, em vez de frase genérica, e só disparam quando você realmente tem uma sequência ativa. Testei no celular adiantando os horários pra confirmar que os dois disparam certinho, com o texto certo.\n\nE o app finalmente tem um ícone de verdade — até agora era o robozinho padrão do React Native. Desenhei um alvo na cor laranja que já é a identidade do app, como ícone adaptativo (recorta certo em qualquer formato de launcher, com versão pra combinar com o tema do sistema no Android 13+).",
+    "notes": "Duas coisas nessa: deixei o aviso de sequência em risco mais no estilo Duolingo mesmo — agora são dois avisos, um às 20h (\"ainda dá tempo\") e outro às 22h30, esse último com contagem regressiva real até meia-noite. As mensagens passaram a citar o número de dias da sua sequência direto no texto, em vez de frase genérica, e só disparam quando você realmente tem uma sequência ativa. Testei no celular adiantando os horários pra confirmar que os dois disparam certinho, com o texto certo.\n\nE o app finalmente tem um ícone de verdade — até agora era o robozinho padrão do React Native. É um retículo de foco (cantos de mira de câmera) em verde água, como ícone adaptativo (recorta certo em qualquer formato de launcher, com versão pra combinar com o tema do sistema no Android 13+).",
     "publishAt": "2026-11-07T19:50:00Z"
   }
 ]
