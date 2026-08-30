@@ -1,6 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import HeroIcon from '../../app/HeroIcon';
 import { useTheme } from '../../app/ThemeContext';
 import { useProjects } from './useProjects';
 import type { TasksStackParamList } from './TasksNavigator';
@@ -32,7 +33,7 @@ function ProjectsListScreen() {
       <Pressable
         style={[styles.fab, { backgroundColor: accent, shadowColor: accent }]}
         onPress={() => navigation.navigate('ProjectForm', undefined)}>
-        <Text style={styles.fabIcon}>+</Text>
+        <HeroIcon name="plus" size={26} color="white" />
       </Pressable>
     </View>
   );
@@ -139,11 +140,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.4,
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 4 },
-  },
-  fabIcon: {
-    color: 'white',
-    fontSize: 30,
-    lineHeight: 32,
   },
 });
 

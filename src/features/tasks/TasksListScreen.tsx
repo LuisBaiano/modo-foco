@@ -1,6 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import HeroIcon from '../../app/HeroIcon';
 import { useTheme } from '../../app/ThemeContext';
 import { useTasks } from './useTasks';
 import type { TasksStackParamList } from './TasksNavigator';
@@ -77,7 +78,7 @@ function TasksListScreen() {
       <Pressable
         style={[styles.fab, { backgroundColor: accent, shadowColor: accent }]}
         onPress={() => navigation.navigate('TaskForm', undefined)}>
-        <Text style={styles.fabIcon}>+</Text>
+        <HeroIcon name="plus" size={26} color="white" />
       </Pressable>
     </View>
   );
@@ -88,7 +89,7 @@ function TaskRow({ item, onToggle, onOpen }: { item: TaskWithProject; onToggle: 
   return (
     <View style={[styles.card, item.completed && styles.cardDone]}>
       <Pressable onPress={onToggle} hitSlop={8} style={[styles.checkbox, item.completed && styles.checkboxDone]}>
-        {item.completed && <Text style={styles.checkmark}>✓</Text>}
+        {item.completed && <HeroIcon name="check" size={14} color="white" />}
       </Pressable>
       <Pressable style={styles.rowBody} onPress={onOpen}>
         <Text style={[styles.rowTitle, item.completed && styles.rowTitleDone]}>{item.title}</Text>
@@ -167,10 +168,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#10b981',
     borderColor: '#10b981',
   },
-  checkmark: {
-    color: 'white',
-    fontWeight: '700',
-  },
   rowBody: {
     flex: 1,
   },
@@ -219,11 +216,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.4,
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 4 },
-  },
-  fabIcon: {
-    color: 'white',
-    fontSize: 30,
-    lineHeight: 32,
   },
 });
 

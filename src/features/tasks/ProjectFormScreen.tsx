@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import type { NativeStackNavigationProp, NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Alert, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import HeroIcon from '../../app/HeroIcon';
 import { useTheme } from '../../app/ThemeContext';
 import type { TasksStackParamList } from './TasksNavigator';
 import { createProject, deleteProject, getProject, updateProject } from './projectsRepository';
@@ -90,7 +91,7 @@ function ProjectFormScreen() {
             key={option}
             onPress={() => setColor(option)}
             style={[styles.swatch, { backgroundColor: option }, color === option && styles.swatchSelected]}>
-            {color === option && <Text style={styles.swatchCheck}>✓</Text>}
+            {color === option && <HeroIcon name="check" size={18} color="white" />}
           </Pressable>
         ))}
       </View>
@@ -159,10 +160,6 @@ const styles = StyleSheet.create({
   swatchSelected: {
     borderWidth: 3,
     borderColor: '#00000055',
-  },
-  swatchCheck: {
-    color: 'white',
-    fontWeight: '700',
   },
   saveButton: {
     marginTop: 40,
