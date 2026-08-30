@@ -11,6 +11,7 @@ export type ProjectWithProgress = {
   completedTasks: number;
 };
 
+/** Progresso não é armazenado — é sempre recalculado a partir das tarefas vinculadas. */
 export async function listProjectsWithProgress(): Promise<ProjectWithProgress[]> {
   const allProjects = await db.select().from(projects);
   const allTasks = await db.select({ projectId: tasks.projectId, completed: tasks.completed }).from(tasks);
@@ -29,6 +30,7 @@ export async function listProjectsWithProgress(): Promise<ProjectWithProgress[]>
   });
 }
 
+/** Lista simples, sem progresso — usada pelo seletor de projeto no formulário de tarefa. */
 export async function listProjects() {
   return db.select().from(projects);
 }
@@ -57,6 +59,7 @@ export async function updateProject(
     .where(eq(projects.id, projectId));
 }
 
+/** Exclui o projeto sem apagar as tarefas — elas só perdem o vínculo (projectId vira null). */
 export async function deleteProject(projectId: number) {
   await db.update(tasks).set({ projectId: null }).where(eq(tasks.projectId, projectId));
   await db.delete(projects).where(eq(projects.id, projectId));

@@ -25,6 +25,7 @@ function ProjectsHeaderButton({ navigation }: { navigation: NavigationProp<Tasks
   );
 }
 
+/** Stack aninhado da aba Tarefas: tarefas e projetos são dois fluxos ligados pelo botão de pasta no header. */
 function TasksNavigator() {
   return (
     <Stack.Navigator>

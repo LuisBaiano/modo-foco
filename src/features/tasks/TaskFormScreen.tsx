@@ -23,6 +23,11 @@ function tomorrowISODate(): string {
   return d.toISOString().slice(0, 10);
 }
 
+/**
+ * Formulário de criar/editar tarefa. Prazo é por chips rápidos (sem
+ * prazo/hoje/amanhã) em vez de date-picker — evita puxar uma lib nova,
+ * mesma decisão tomada pro targetTime do hábito.
+ */
 function TaskFormScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<TasksStackParamList>>();
   const route = useRoute<Props['route']>();

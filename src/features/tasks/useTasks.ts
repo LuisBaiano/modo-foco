@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { type TaskWithProject, listTasks, toggleTaskCompleted } from './tasksRepository';
 
+/** Lista de tarefas; refaz a busca sempre que a tela ganha foco. */
 export function useTasks() {
   const [tasks, setTasks] = useState<TaskWithProject[]>([]);
   const [loading, setLoading] = useState(true);

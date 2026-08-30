@@ -17,6 +17,12 @@ export type TaskWithProject = {
 
 const PRIORITY_RANK: Record<Priority, number> = { high: 0, medium: 1, low: 2 };
 
+/**
+ * Lista todas as tarefas com o nome/cor do projeto vinculado (se houver).
+ * Ordenação feita em JS (não em SQL) por: não-concluída primeiro, depois
+ * prioridade, depois prazo — mais simples e barato pro volume de dados
+ * de um app pessoal.
+ */
 export async function listTasks(): Promise<TaskWithProject[]> {
   const rows = await db
     .select({
@@ -88,6 +94,7 @@ export async function updateTask(
     .where(eq(tasks.id, taskId));
 }
 
+/** Alterna concluída/pendente e atualiza completedAt de acordo. */
 export async function toggleTaskCompleted(taskId: number) {
   const task = await getTask(taskId);
   if (!task) {

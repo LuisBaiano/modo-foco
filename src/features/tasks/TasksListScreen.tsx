@@ -28,6 +28,7 @@ function tomorrowISODate(): string {
   return d.toISOString().slice(0, 10);
 }
 
+/** Converte a data crua (YYYY-MM-DD) no badge exibido: Atrasada, Hoje, Amanhã ou dd/mm. */
 function formatDueDate(dueDate: string | null): { label: string; overdue: boolean } | null {
   if (!dueDate) {
     return null;
@@ -46,6 +47,7 @@ function formatDueDate(dueDate: string | null): { label: string; overdue: boolea
   return { label: `${day}/${month}`, overdue: false };
 }
 
+/** Tela principal da aba Tarefas: lista com toggle de concluída + botão de criar. */
 function TasksListScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<TasksStackParamList>>();
   const { tasks, loading, toggle } = useTasks();

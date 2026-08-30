@@ -6,6 +6,7 @@ import { useProjects } from './useProjects';
 import type { TasksStackParamList } from './TasksNavigator';
 import type { ProjectWithProgress } from './projectsRepository';
 
+/** Lista de projetos com barra de progresso, acessada pelo botão de pasta na aba Tarefas. */
 function ProjectsListScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<TasksStackParamList>>();
   const { projects, loading } = useProjects();

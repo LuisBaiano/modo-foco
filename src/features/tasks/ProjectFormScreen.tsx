@@ -19,6 +19,7 @@ const PROJECT_COLORS = [
 
 type Props = NativeStackScreenProps<TasksStackParamList, 'ProjectForm'>;
 
+/** Formulário de criar/editar projeto. Botão de excluir só aparece no modo edição. */
 function ProjectFormScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<TasksStackParamList>>();
   const route = useRoute<Props['route']>();
