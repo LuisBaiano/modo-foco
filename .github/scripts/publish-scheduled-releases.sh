@@ -31,13 +31,39 @@ for i in $DUE_INDICES; do
   notes=$(echo "$entry" | jq -r '.notes')
 
   echo "Publicando $tag a partir da branch $branch..."
-  git fetch origin "$branch" main
-  git checkout main
-  git merge --ff-only "origin/$branch"
-  git tag -a "$tag" -m "$title"
+  git fetch --prune --tags origin main "$branch"
+
+  if ! git show-ref --verify --quiet "refs/remotes/origin/$branch"; then
+    echo "Erro: a branch remota '$branch' não existe." >&2
+    exit 1
+  fi
+
+  # A branch de release pode ter sido criada antes de outros commits em main.
+  # Um merge explícito preserva os dois históricos; --ff-only abortaria nesse
+  # cenário, deixando a release agendada sem publicar.
+  git checkout -B main origin/main
+  git merge --no-ff --no-edit "origin/$branch"
+
+  if git rev-parse -q --verify "refs/tags/$tag" >/dev/null; then
+    tag_commit=$(git rev-list -n 1 "$tag")
+    head_commit=$(git rev-parse HEAD)
+    if [ "$tag_commit" != "$head_commit" ]; then
+      echo "Erro: a tag '$tag' já existe e não aponta para o commit da release." >&2
+      exit 1
+    fi
+    echo "A tag $tag já existe neste commit; continuando."
+  else
+    git tag -a "$tag" -m "$title"
+  fi
+
   git push origin main
   git push origin "$tag"
-  gh release create "$tag" --title "$title" --notes "$notes"
+
+  if gh release view "$tag" >/dev/null 2>&1; then
+    echo "A release $tag já existe; continuando."
+  else
+    gh release create "$tag" --title "$title" --notes "$notes"
+  fi
 done
 
 jq --argjson now "$NOW" '
