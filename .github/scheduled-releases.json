@@ -5,5 +5,12 @@
     "title": "v0.4.0 — Tarefas & Projetos",
     "notes": "Segundo módulo funcional: Tarefas & Projetos (UC09-12 da spec).\n\n- Criar tarefa (título, prioridade, prazo rápido hoje/amanhã/sem prazo, projeto opcional)\n- Concluir/reabrir tarefa direto na lista, ordenada por prioridade e prazo\n- Badges de prioridade, projeto e prazo (com aviso de atrasada)\n- Projetos: criar com cor e descrição, progresso calculado automaticamente a partir das tarefas vinculadas\n- Excluir projeto não apaga as tarefas, só desvincula\n\nMesmo padrão de arquitetura do módulo Hábitos (repository + hook + navegação aninhada), agora usando a cor de destaque personalizável em toda a interface.\n\nValidado ponta a ponta em dispositivo Android real.",
     "publishAt": "2026-08-30T22:47:00Z"
+  },
+  {
+    "branch": "release/v0.5.0",
+    "tag": "v0.5.0",
+    "title": "v0.5.0 — Estudos",
+    "notes": "Terceiro módulo funcional: Estudos (UC13-16 da spec).\n\n- Iniciar sessão de estudo por matéria, em modo Pomodoro (25min foco / 5min pausa, com contagem de ciclos) ou modo Livre (cronômetro corrido)\n- Encerrar sessão com anotação curta e avaliação de produtividade\n- Estatísticas da semana: total de horas estudadas e distribuição por matéria\n- Histórico de sessões recentes\n\nMesmo padrão de arquitetura dos módulos anteriores (repository + hook + navegação aninhada). Relógio recalculado a partir de timestamps reais, não decrementado ingenuamente, então não desanda se o app travar um instante.\n\nValidado ponta a ponta em dispositivo Android real, incluindo os dois modos de sessão.",
+    "publishAt": "2026-09-05T18:23:00Z"
   }
 ]
