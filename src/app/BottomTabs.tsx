@@ -2,7 +2,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import type { NavigationProp } from '@react-navigation/native';
 import DashboardScreen from '../features/dashboard/DashboardScreen';
 import HabitsNavigator from '../features/habits/HabitsNavigator';
-import StudyScreen from '../features/study/StudyScreen';
+import StudyNavigator from '../features/study/StudyNavigator';
 import TasksScreen from '../features/tasks/TasksScreen';
 import HealthScreen from '../features/health/HealthScreen';
 import HeroIcon, { type IconName } from './HeroIcon';
@@ -45,7 +45,11 @@ function BottomTabs() {
         component={HabitsNavigator}
         options={{ headerShown: false, title: 'Hábitos' }}
       />
-      <Tab.Screen name="Estudos" component={StudyScreen} />
+      <Tab.Screen
+        name="Estudos"
+        component={StudyNavigator}
+        options={{ headerShown: false, title: 'Estudos' }}
+      />
       <Tab.Screen name="Tarefas" component={TasksScreen} />
       <Tab.Screen name="Saude" component={HealthScreen} options={{ title: 'Saúde' }} />
     </Tab.Navigator>
