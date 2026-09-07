@@ -3,7 +3,7 @@ import type { NavigationProp } from '@react-navigation/native';
 import DashboardScreen from '../features/dashboard/DashboardScreen';
 import HabitsNavigator from '../features/habits/HabitsNavigator';
 import StudyNavigator from '../features/study/StudyNavigator';
-import TasksScreen from '../features/tasks/TasksScreen';
+import TasksNavigator from '../features/tasks/TasksNavigator';
 import HealthScreen from '../features/health/HealthScreen';
 import HeroIcon, { type IconName } from './HeroIcon';
 import ProfileHeaderButton from './ProfileHeaderButton';
@@ -50,7 +50,11 @@ function BottomTabs() {
         component={StudyNavigator}
         options={{ headerShown: false, title: 'Estudos' }}
       />
-      <Tab.Screen name="Tarefas" component={TasksScreen} />
+      <Tab.Screen
+        name="Tarefas"
+        component={TasksNavigator}
+        options={{ headerShown: false, title: 'Tarefas' }}
+      />
       <Tab.Screen name="Saude" component={HealthScreen} options={{ title: 'Saúde' }} />
     </Tab.Navigator>
   );
