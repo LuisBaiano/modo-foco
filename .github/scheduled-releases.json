@@ -10,63 +10,63 @@
     "branch": "release/v0.6.0",
     "tag": "v0.6.0",
     "title": "v0.6.0 — Saúde",
-    "notes": "Quarto módulo: Saúde.\n\n- Água: um toque = +250ml, sem meta cobrando, só acompanhando\n- Humor: check-in diário com 5 carinhas\n- Treino e refeição registráveis rapidinho (refeição sem contar caloria, de propósito)\n- Resumo da semana com tudo junto\n\nSimples e direto, não quis complicar esse aqui.",
+    "notes": "A aba Saúde chegou. Agora dá para registrar água, humor, treinos e refeições sem transformar isso numa planilha. Também tem um resumo da semana para acompanhar tudo em um só lugar.",
     "publishAt": "2026-09-13T14:05:00Z"
   },
   {
     "branch": "release/v0.7.0",
     "tag": "v0.7.0",
     "title": "v0.7.0 — Gamificação",
-    "notes": "Esse módulo foi o mais trabalhoso até agora: XP, streak e conquistas de verdade. Hábito concluído rende XP, estudo rende por minuto, tarefa de prioridade alta rende bem mais que o resto, treino também soma. Streak é no estilo Duolingo mesmo — quebra a sequência e dói, custa XP, não é só um número que zera educadamente. Treino tem streak própria, separada da geral. 13 conquistas escondidas (aparecem como \"???\" até desbloquear), banco de 50 frases pra não repetir sempre a mesma coisa, e uma animação de celebração toda vez que rola recompensa. Perfil deixou de ser tela de teste e virou tela de verdade.",
+    "notes": "A gamificação entrou no app: atividades agora dão XP, as sequências podem ser acompanhadas e há conquistas para desbloquear. Há pontuações diferentes para hábitos, estudos, tarefas e treinos, além de uma sequência própria para os treinos. O perfil também ganhou uma tela completa, com frases e uma pequena comemoração quando você recebe uma recompensa.",
     "publishAt": "2026-09-21T00:10:00Z"
   },
   {
     "branch": "release/v0.8.0",
     "tag": "v0.8.0",
     "title": "v0.8.0 — Notificações",
-    "notes": "Última peça dessa rodada: notificações. Hábito com horário configurado lembra na hora certa e some sozinho se você já marcou como feito. Se o dia tá acabando sem nenhuma atividade, chega um aviso de streak em risco lá pelas 20h — desaparece assim que você faz alguma coisa, sem ficar insistindo à toa. Água ganhou lembretes ao longo do dia com botão de \"+1 copo\" direto na notificação. Aproveitei e adicionei também um campo de questões respondidas nas sessões de estudo, que tava faltando. Com isso fecho essa leva de features por enquanto.",
+    "notes": "As notificações chegaram. Hábitos com horário avisam na hora certa, a sequência em risco gera um lembrete no fim do dia e os avisos somem quando você já fez alguma atividade. Também dá para receber lembretes de água e registrar um copo direto pela notificação. Nas sessões de estudo, entrou o campo para anotar quantas questões foram respondidas.",
     "publishAt": "2026-09-27T15:35:00Z"
   },
   {
     "branch": "release/v0.9.0",
     "tag": "v0.9.0",
     "title": "v0.9.0 — Tema escuro",
-    "notes": "Pedido antigo que enfim entrou: tema escuro em todo o app, não só uma casca por cima. Perfil ganhou um seletor (Claro/Escuro/Sistema) e o Sistema realmente acompanha a configuração do aparelho. Fundo é preto puro de propósito — em tela AMOLED isso desliga o pixel de verdade e economiza bateria, não é só estética. Ajustei também os ícones da barra de baixo pra ficarem brancos no escuro, que antes ficavam meio apagados. Foi um trampo grande de mexer tela por tela, mas testei módulo por módulo no celular pra garantir que nada ficou com texto sumindo no fundo.",
+    "notes": "O tema escuro agora está disponível em todo o app. No perfil, você pode escolher entre claro, escuro ou seguir automaticamente o tema do celular. Também ajustei as cores dos ícones e das telas para manter a leitura boa no modo escuro.",
     "publishAt": "2026-10-04T19:50:00Z"
   },
   {
     "branch": "release/v0.10.0",
     "tag": "v0.10.0",
     "title": "v0.10.0 — Água configurável",
-    "notes": "Ajuste pedido no módulo de Saúde: o copo de água não é mais fixo em 250ml. Agora dá pra configurar o tamanho do seu copo de verdade e o app calcula o total em ml do dia em cima disso. O lembrete também deixou de ser 4 vezes fixas — agora é de X em X horas, do jeito que você configurar, dentro da janela das 8h às 22h. Testando isso no celular encontrei um bug chato: com o teclado aberto, o primeiro toque no botão Salvar só fechava o teclado e não salvava nada, precisava tocar duas vezes. Corrigi.",
+    "notes": "A água ficou mais flexível. Você pode informar o tamanho do seu copo e escolher de quantas em quantas horas quer receber lembretes, sempre entre 8h e 22h. Aproveitei para corrigir um problema que fazia o primeiro toque em Salvar apenas fechar o teclado.",
     "publishAt": "2026-10-11T19:40:00Z"
   },
   {
     "branch": "release/v0.11.0",
     "tag": "v0.11.0",
     "title": "v0.11.0 — Rotina",
-    "notes": "Módulo novo: Rotina. Cadastra blocos de horário fixo do dia a dia (tipo \"Trabalho, 07:30–17:30, toda segunda\") e escolhe em quais dias da semana cada um repete. Quando chega o horário de um bloco, dispara uma notificação lembrando o que você deveria estar fazendo. Pra blocos como caminhada também dá pra ligar o registro de km — aparece um campo direto na lista pra somar a distância do dia. Virou aba nova na barra de baixo.",
+    "notes": "A nova aba Rotina ajuda a organizar blocos fixos do dia, como trabalho, aulas ou caminhada. Cada bloco pode se repetir nos dias escolhidos e enviar uma notificação no horário marcado. Para atividades como caminhada, também dá para registrar a distância percorrida.",
     "publishAt": "2026-10-18T15:15:00Z"
   },
   {
     "branch": "release/v0.12.0",
     "tag": "v0.12.0",
     "title": "v0.12.0 — Exclusão em lote + tags",
-    "notes": "Duas coisas que sentia falta: primeiro, agora dá pra excluir várias coisas de uma vez — segura um item numa lista (tarefa, sessão de estudo, treino ou refeição) que entra num modo de seleção, marca quantos quiser e exclui tudo junto, ao invés de um por um. Segundo, tirei o módulo de Projetos e coloquei tags livres nas tarefas no lugar — mais simples pra organizar sem precisar cadastrar projeto antes. Detalhe técnico chato: a migração que remove a coluna antiga travava porque o SQLite não deixa apagar uma coluna que tem chave estrangeira direto, tive que recriar a tabela. Peguei isso testando no celular antes de ir pro ar.",
+    "notes": "Duas melhorias para organizar melhor o app: agora é possível selecionar e excluir vários itens de uma vez em listas como tarefas, estudos, treinos e refeições. Nas tarefas, os projetos foram substituídos por tags livres, que são mais rápidas de usar e não exigem cadastro prévio.",
     "publishAt": "2026-10-25T18:20:00Z"
   },
   {
     "branch": "release/v0.13.0",
     "tag": "v0.13.0",
     "title": "v0.13.0 — Remoção do check-in de humor",
-    "notes": "Ajuste pequeno na aba Saúde: tirei o check-in diário de humor (as carinhas e o \"humor médio\" no resumo semanal). Não fazia sentido no fluxo do módulo, então saiu — água, treino e refeição continuam do mesmo jeito. Aproveitei que estava mexendo na tela pra testar o registro de refeição de novo no celular, continua funcionando normal.",
+    "notes": "Removi o check-in diário de humor da aba Saúde e o respectivo resumo semanal. Os registros de água, treino e refeição continuam disponíveis normalmente.",
     "publishAt": "2026-11-01T17:35:00Z"
   },
   {
     "branch": "release/v0.14.0",
     "tag": "v0.14.0",
     "title": "v0.14.0 — Aviso de streak mais afiado + ícone novo",
-    "notes": "Duas coisas nessa: deixei o aviso de sequência em risco mais no estilo Duolingo mesmo — agora são dois avisos, um às 20h (\"ainda dá tempo\") e outro às 22h30, esse último com contagem regressiva real até meia-noite. As mensagens passaram a citar o número de dias da sua sequência direto no texto, em vez de frase genérica, e só disparam quando você realmente tem uma sequência ativa. Testei no celular adiantando os horários pra confirmar que os dois disparam certinho, com o texto certo.\n\nE o app finalmente tem um ícone de verdade — até agora era o robozinho padrão do React Native. É um retículo de foco (cantos de mira de câmera) em verde água, como ícone adaptativo (recorta certo em qualquer formato de launcher, com versão pra combinar com o tema do sistema no Android 13+).",
+    "notes": "Melhorei os avisos de sequência em risco. Agora há um lembrete às 20h e outro às 22h30, com contagem regressiva até meia-noite. As mensagens mostram há quantos dias a sequência está ativa e só aparecem quando há uma sequência para proteger.\n\nTambém troquei o ícone padrão do React Native por um ícone próprio de foco, em verde-água, com suporte ao formato adaptativo do Android.",
     "publishAt": "2026-11-07T19:50:00Z"
   }
 ]
