@@ -4,7 +4,7 @@ import DashboardScreen from '../features/dashboard/DashboardScreen';
 import HabitsNavigator from '../features/habits/HabitsNavigator';
 import StudyNavigator from '../features/study/StudyNavigator';
 import TasksNavigator from '../features/tasks/TasksNavigator';
-import HealthScreen from '../features/health/HealthScreen';
+import HealthNavigator from '../features/health/HealthNavigator';
 import HeroIcon, { type IconName } from './HeroIcon';
 import ProfileHeaderButton from './ProfileHeaderButton';
 import type { RootStackParamList } from './RootNavigator';
@@ -55,7 +55,11 @@ function BottomTabs() {
         component={TasksNavigator}
         options={{ headerShown: false, title: 'Tarefas' }}
       />
-      <Tab.Screen name="Saude" component={HealthScreen} options={{ title: 'Saúde' }} />
+      <Tab.Screen
+        name="Saude"
+        component={HealthNavigator}
+        options={{ headerShown: false, title: 'Saúde' }}
+      />
     </Tab.Navigator>
   );
 }
