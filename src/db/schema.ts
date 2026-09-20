@@ -111,13 +111,16 @@ export const achievements = sqliteTable('achievements', {
   unlockedAt: integer('unlocked_at', { mode: 'timestamp' }).notNull(),
 });
 
-/** XP e streak geral do usuário. Linha única (fase de gamificação, ainda não populada). */
+/** XP e streaks do usuário. Linha única. Treino tem streak separada da geral, por decisão de spec. */
 export const userXp = sqliteTable('user_xp', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   totalXp: integer('total_xp').notNull().default(0),
   currentStreak: integer('current_streak').notNull().default(0),
   longestStreak: integer('longest_streak').notNull().default(0),
   lastActiveDate: text('last_active_date'),
+  workoutStreak: integer('workout_streak').notNull().default(0),
+  longestWorkoutStreak: integer('longest_workout_streak').notNull().default(0),
+  lastWorkoutDate: text('last_workout_date'),
 });
 
 /** Preferências do app. Linha única de id fixo (ver settingsRepository). */
