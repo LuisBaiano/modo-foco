@@ -5,6 +5,7 @@ import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useTheme } from '../../app/ThemeContext';
 import type { StudyStackParamList } from './StudyNavigator';
 import { type ProductivityRating, endSession, incrementCycles } from './studyRepository';
+import { emitCelebration } from '../gamification/celebrationBus';
 
 const FOCUS_SECONDS = 25 * 60;
 const BREAK_SECONDS = 5 * 60;
@@ -78,7 +79,8 @@ function StudySessionScreen() {
   }, [screenState, mode, sessionId]);
 
   const handleSaveSummary = async () => {
-    await endSession(sessionId, { notes: notes.trim() || null, productivityRating: rating });
+    const reward = await endSession(sessionId, { notes: notes.trim() || null, productivityRating: rating });
+    emitCelebration(reward);
     navigation.goBack();
   };
 
