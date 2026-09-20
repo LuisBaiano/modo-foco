@@ -1,6 +1,7 @@
 import { eq } from 'drizzle-orm';
 import { db } from '../../db/client';
 import { projects, tasks } from '../../db/schema';
+import { onTaskCompleted, type RewardResult } from '../gamification/gamificationRepository';
 
 export type Priority = 'low' | 'medium' | 'high';
 
@@ -94,17 +95,19 @@ export async function updateTask(
     .where(eq(tasks.id, taskId));
 }
 
-/** Alterna concluída/pendente e atualiza completedAt de acordo. */
-export async function toggleTaskCompleted(taskId: number) {
+/** Alterna concluída/pendente e atualiza completedAt de acordo; XP só ao concluir, nunca ao reabrir. */
+export async function toggleTaskCompleted(taskId: number): Promise<RewardResult | null> {
   const task = await getTask(taskId);
   if (!task) {
-    return;
+    return null;
   }
   const completed = !task.completed;
   await db
     .update(tasks)
     .set({ completed, completedAt: completed ? new Date() : null })
     .where(eq(tasks.id, taskId));
+
+  return completed ? onTaskCompleted(task.priority as Priority) : null;
 }
 
 export async function deleteTask(taskId: number) {

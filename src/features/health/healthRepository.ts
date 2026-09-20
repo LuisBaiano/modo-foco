@@ -1,6 +1,7 @@
 import { desc, eq, gte } from 'drizzle-orm';
 import { db } from '../../db/client';
 import { mealLogs, moodLogs, waterLogs, workoutLogs } from '../../db/schema';
+import { onHealthLogWithoutXp, onWorkoutLogged, type RewardResult } from '../gamification/gamificationRepository';
 
 export type WorkoutType = 'walk' | 'strength' | 'cycling' | 'yoga' | 'other';
 export type MealType = 'breakfast' | 'lunch' | 'snack' | 'dinner';
@@ -22,21 +23,28 @@ function daysAgoISODate(days: number): string {
   return date.toISOString().slice(0, 10);
 }
 
-export async function logWorkout(input: { type: WorkoutType; durationMinutes: number; notes: string | null }) {
+export async function logWorkout(
+  input: { type: WorkoutType; durationMinutes: number; notes: string | null },
+): Promise<RewardResult> {
   await db.insert(workoutLogs).values({
     type: input.type,
     durationMinutes: input.durationMinutes,
     notes: input.notes,
     date: todayISODate(),
   });
+  return onWorkoutLogged();
 }
 
 export async function logMeal(input: { type: MealType; notes: string | null }) {
   await db.insert(mealLogs).values({ type: input.type, notes: input.notes, date: todayISODate() });
 }
 
-/** Soma +1 copo (250ml) na água de hoje, criando o registro do dia se ainda não existir. */
-export async function addWaterGlass() {
+/**
+ * Soma +1 copo (250ml) na água de hoje, criando o registro do dia se ainda
+ * não existir. Não concede XP (água não é pontuada, só acompanhada), mas
+ * ainda dispara o check de conquistas — é o que destrava "hidratação perfeita".
+ */
+export async function addWaterGlass(): Promise<RewardResult> {
   const today = todayISODate();
   const [existing] = await db.select().from(waterLogs).where(eq(waterLogs.date, today));
   if (existing) {
@@ -44,6 +52,7 @@ export async function addWaterGlass() {
   } else {
     await db.insert(waterLogs).values({ date: today, glasses: 1 });
   }
+  return onHealthLogWithoutXp();
 }
 
 export async function getTodayWaterGlasses(): Promise<number> {

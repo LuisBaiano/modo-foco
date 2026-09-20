@@ -1,6 +1,7 @@
 import { and, eq } from 'drizzle-orm';
 import { db } from '../../db/client';
 import { habitLogs, habits } from '../../db/schema';
+import { onHabitCompleted, type RewardResult } from '../gamification/gamificationRepository';
 
 export type Frequency = 'daily' | 'weekly';
 
@@ -63,19 +64,28 @@ export async function deleteHabit(habitId: number) {
   await db.delete(habits).where(eq(habits.id, habitId));
 }
 
-/** Alterna feito/não-feito hoje — insere o log do dia se ainda não existir, senão inverte. */
-export async function toggleHabitToday(habitId: number) {
+/**
+ * Alterna feito/não-feito hoje — insere o log do dia se ainda não existir,
+ * senão inverte. XP e streak só são concedidos ao marcar como feito, nunca
+ * ao desmarcar (evita o truque de marcar/desmarcar repetido pra farmar XP).
+ */
+export async function toggleHabitToday(habitId: number): Promise<RewardResult | null> {
   const today = todayISODate();
   const [existing] = await db
     .select()
     .from(habitLogs)
     .where(and(eq(habitLogs.habitId, habitId), eq(habitLogs.date, today)));
 
+  let completedNow: boolean;
   if (existing) {
-    await db.update(habitLogs).set({ completed: !existing.completed }).where(eq(habitLogs.id, existing.id));
+    completedNow = !existing.completed;
+    await db.update(habitLogs).set({ completed: completedNow }).where(eq(habitLogs.id, existing.id));
   } else {
+    completedNow = true;
     await db.insert(habitLogs).values({ habitId, date: today, completed: true });
   }
+
+  return completedNow ? onHabitCompleted() : null;
 }
 
 /**

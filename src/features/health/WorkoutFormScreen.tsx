@@ -5,6 +5,7 @@ import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useTheme } from '../../app/ThemeContext';
 import type { HealthStackParamList } from './HealthNavigator';
 import { type WorkoutType, logWorkout } from './healthRepository';
+import { emitCelebration } from '../gamification/celebrationBus';
 
 const WORKOUT_TYPES: { value: WorkoutType; label: string }[] = [
   { value: 'walk', label: 'Caminhada' },
@@ -30,7 +31,8 @@ function WorkoutFormScreen() {
     if (!isValid) {
       return;
     }
-    await logWorkout({ type, durationMinutes, notes: notes.trim() || null });
+    const reward = await logWorkout({ type, durationMinutes, notes: notes.trim() || null });
+    emitCelebration(reward);
     navigation.goBack();
   };
 

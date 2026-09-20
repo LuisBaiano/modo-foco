@@ -11,6 +11,7 @@ import {
   setTodayMood,
 } from './healthRepository';
 import type { mealLogs, workoutLogs } from '../../db/schema';
+import { emitCelebration } from '../gamification/celebrationBus';
 
 type WorkoutLog = typeof workoutLogs.$inferSelect;
 type MealLog = typeof mealLogs.$inferSelect;
@@ -56,7 +57,8 @@ export function useHealth() {
   );
 
   const addWater = useCallback(async () => {
-    await addWaterGlass();
+    const reward = await addWaterGlass();
+    emitCelebration(reward);
     await refresh();
   }, [refresh]);
 
