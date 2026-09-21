@@ -1,12 +1,5 @@
 [
   {
-    "branch": "release/v0.7.0",
-    "tag": "v0.7.0",
-    "title": "v0.7.0 — Gamificação",
-    "notes": "A gamificação entrou no app: atividades agora dão XP, as sequências podem ser acompanhadas e há conquistas para desbloquear. Há pontuações diferentes para hábitos, estudos, tarefas e treinos, além de uma sequência própria para os treinos. O perfil também ganhou uma tela completa, com frases e uma pequena comemoração quando você recebe uma recompensa.",
-    "publishAt": "2026-09-21T00:10:00Z"
-  },
-  {
     "branch": "release/v0.8.0",
     "tag": "v0.8.0",
     "title": "v0.8.0 — Notificações",
