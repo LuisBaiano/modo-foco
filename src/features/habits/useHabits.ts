@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { type HabitWithTodayStatus, listHabitsWithTodayStatus, toggleHabitToday } from './habitsRepository';
+import { emitCelebration } from '../gamification/celebrationBus';
 
 /** Lista de hábitos do dia; refaz a busca sempre que a tela ganha foco. */
 export function useHabits() {
@@ -24,7 +25,8 @@ export function useHabits() {
 
   const toggle = useCallback(
     async (habitId: number) => {
-      await toggleHabitToday(habitId);
+      const reward = await toggleHabitToday(habitId);
+      emitCelebration(reward);
       await refresh();
     },
     [refresh],

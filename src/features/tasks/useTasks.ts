@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { type TaskWithProject, listTasks, toggleTaskCompleted } from './tasksRepository';
+import { emitCelebration } from '../gamification/celebrationBus';
 
 /** Lista de tarefas; refaz a busca sempre que a tela ganha foco. */
 export function useTasks() {
@@ -24,7 +25,8 @@ export function useTasks() {
 
   const toggle = useCallback(
     async (taskId: number) => {
-      await toggleTaskCompleted(taskId);
+      const reward = await toggleTaskCompleted(taskId);
+      emitCelebration(reward);
       await refresh();
     },
     [refresh],

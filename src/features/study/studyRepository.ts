@@ -1,6 +1,7 @@
 import { and, eq, gte, isNotNull } from 'drizzle-orm';
 import { db } from '../../db/client';
 import { studySessions } from '../../db/schema';
+import { onStudySessionEnded, type RewardResult } from '../gamification/gamificationRepository';
 
 export type StudyMode = 'pomodoro' | 'free';
 export type ProductivityRating = 'low' | 'medium' | 'high';
@@ -58,15 +59,26 @@ export async function incrementCycles(sessionId: number) {
   await db.update(studySessions).set({ cycles: session.cycles + 1 }).where(eq(studySessions.id, sessionId));
 }
 
-/** Encerra a sessão: marca endedAt e salva a anotação/avaliação opcionais. */
+/**
+ * Encerra a sessão: marca endedAt, salva a anotação/avaliação opcionais e
+ * concede XP proporcional aos minutos estudados (1 XP/min, nos dois modos).
+ */
 export async function endSession(
   sessionId: number,
   input: { notes: string | null; productivityRating: ProductivityRating | null },
-) {
+): Promise<RewardResult | null> {
+  const session = await getSession(sessionId);
+  const endedAt = new Date();
   await db
     .update(studySessions)
-    .set({ endedAt: new Date(), notes: input.notes, productivityRating: input.productivityRating })
+    .set({ endedAt, notes: input.notes, productivityRating: input.productivityRating })
     .where(eq(studySessions.id, sessionId));
+
+  if (!session) {
+    return null;
+  }
+  const durationMinutes = Math.round((endedAt.getTime() - session.startedAt.getTime()) / 60000);
+  return onStudySessionEnded(durationMinutes);
 }
 
 /**

@@ -4,11 +4,21 @@ import ColorPicker from '../../app/ColorPicker';
 import HeroIcon from '../../app/HeroIcon';
 import { ACCENT_PRESETS, useTheme } from '../../app/ThemeContext';
 import FocusBlock from '../../native/FocusBlock';
+import { ACHIEVEMENTS } from '../gamification/achievementsCatalog';
+import { useGamification } from '../gamification/useGamification';
 
-/** Tela de Perfil: seleção de cor de destaque + teste do módulo nativo. Ainda sem XP/conquistas de verdade. */
+function formatUnlockedDate(date: Date): string {
+  return date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+}
+
+/** Tela de Perfil: XP/streaks, conquistas, cor de destaque e teste do módulo nativo. */
 function ProfileScreen() {
   const [pingResult, setPingResult] = useState<string | null>(null);
   const { accent, setAccent } = useTheme();
+  const { summary, unlockedAchievements, totalAchievements } = useGamification();
+
+  const unlockedKeys = new Set(unlockedAchievements.map(a => a.key));
+  const unlockedByKey = new Map(unlockedAchievements.map(a => [a.key, a]));
 
   const handlePing = async () => {
     try {
@@ -22,10 +32,50 @@ function ProfileScreen() {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Perfil</Text>
-      <Text style={styles.subtitle}>Em construção</Text>
+
+      <View style={styles.xpCard}>
+        <Text style={styles.xpValue}>{summary.totalXp} XP</Text>
+        <View style={styles.streakRow}>
+          <View style={styles.streakItem}>
+            <Text style={styles.streakValue}>{summary.currentStreak}</Text>
+            <Text style={styles.streakLabel}>sequência</Text>
+          </View>
+          <View style={styles.streakItem}>
+            <Text style={styles.streakValue}>{summary.longestStreak}</Text>
+            <Text style={styles.streakLabel}>recorde</Text>
+          </View>
+          <View style={styles.streakItem}>
+            <Text style={styles.streakValue}>{summary.workoutStreak}</Text>
+            <Text style={styles.streakLabel}>treino seguido</Text>
+          </View>
+        </View>
+      </View>
+
+      <View style={styles.achievementsSection}>
+        <Text style={[styles.sectionLabel, { color: accent }]}>
+          Conquistas ({unlockedAchievements.length}/{totalAchievements})
+        </Text>
+        {ACHIEVEMENTS.map(achievement => {
+          const unlocked = unlockedKeys.has(achievement.key);
+          const unlockedRow = unlockedByKey.get(achievement.key);
+          return (
+            <View key={achievement.key} style={[styles.achievementRow, !unlocked && styles.achievementRowLocked]}>
+              <View style={styles.achievementTextColumn}>
+                <Text style={[styles.achievementTitle, !unlocked && styles.achievementTitleLocked]}>
+                  {unlocked ? achievement.title : '???'}
+                </Text>
+                <Text style={styles.achievementDescription}>{achievement.description}</Text>
+              </View>
+              {unlocked && unlockedRow && (
+                <Text style={styles.achievementDate}>{formatUnlockedDate(unlockedRow.unlockedAt)}</Text>
+              )}
+            </View>
+          );
+        })}
+      </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionLabel}>Cor de destaque</Text>
+        <Text style={[styles.sectionLabel, { color: accent }]}>Cor de destaque</Text>
         <View style={styles.swatchRow}>
           {ACCENT_PRESETS.map(preset => (
             <Pressable
@@ -42,7 +92,7 @@ function ProfileScreen() {
           ))}
         </View>
 
-        <Text style={[styles.sectionLabel, styles.customLabel]}>Cor personalizada</Text>
+        <Text style={[styles.sectionLabel, styles.customLabel, { color: accent }]}>Cor personalizada</Text>
         <ColorPicker value={accent} onChange={setAccent} />
       </View>
 
@@ -58,17 +108,82 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     alignItems: 'center',
-    justifyContent: 'center',
     paddingVertical: 32,
+    paddingHorizontal: 20,
   },
   title: {
     fontSize: 24,
     fontWeight: '700',
   },
-  subtitle: {
-    marginTop: 8,
+  xpCard: {
+    marginTop: 20,
+    width: '100%',
+    backgroundColor: '#1f2937',
+    borderRadius: 20,
+    padding: 20,
+    alignItems: 'center',
+    elevation: 2,
+  },
+  xpValue: {
+    color: '#facc15',
+    fontSize: 32,
+    fontWeight: '800',
+  },
+  streakRow: {
+    flexDirection: 'row',
+    marginTop: 16,
+    gap: 24,
+  },
+  streakItem: {
+    alignItems: 'center',
+  },
+  streakValue: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: '700',
+  },
+  streakLabel: {
+    color: '#9ca3af',
+    fontSize: 11,
+    marginTop: 2,
+  },
+  achievementsSection: {
+    marginTop: 32,
+    width: '100%',
+  },
+  achievementRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: 'white',
+    borderRadius: 16,
+    padding: 14,
+    marginBottom: 8,
+    elevation: 1,
+  },
+  achievementRowLocked: {
+    opacity: 0.5,
+  },
+  achievementTextColumn: {
+    flexShrink: 1,
+  },
+  achievementTitle: {
+    fontWeight: '700',
     fontSize: 14,
-    opacity: 0.6,
+    color: '#1f2937',
+  },
+  achievementTitleLocked: {
+    color: '#6b7280',
+  },
+  achievementDescription: {
+    fontSize: 12,
+    color: '#6b7280',
+    marginTop: 2,
+  },
+  achievementDate: {
+    fontSize: 11,
+    color: '#9ca3af',
+    marginLeft: 8,
   },
   section: {
     marginTop: 32,
@@ -77,7 +192,6 @@ const styles = StyleSheet.create({
   sectionLabel: {
     fontSize: 13,
     fontWeight: '600',
-    opacity: 0.6,
     marginBottom: 12,
   },
   customLabel: {
