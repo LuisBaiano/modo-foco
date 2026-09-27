@@ -1,12 +1,5 @@
 [
   {
-    "branch": "release/v0.8.0",
-    "tag": "v0.8.0",
-    "title": "v0.8.0 — Notificações",
-    "notes": "As notificações chegaram. Hábitos com horário avisam na hora certa, a sequência em risco gera um lembrete no fim do dia e os avisos somem quando você já fez alguma atividade. Também dá para receber lembretes de água e registrar um copo direto pela notificação. Nas sessões de estudo, entrou o campo para anotar quantas questões foram respondidas.",
-    "publishAt": "2026-09-27T15:35:00Z"
-  },
-  {
     "branch": "release/v0.9.0",
     "tag": "v0.9.0",
     "title": "v0.9.0 — Tema escuro",
