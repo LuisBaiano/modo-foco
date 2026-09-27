@@ -26,5 +26,12 @@
     "title": "v0.7.0 — Gamificação",
     "notes": "Fase 3 do plano: motor de XP, streaks e conquistas por trás dos 4 módulos.\n\n- XP por ação: hábito concluído (+10), estudo (+1/min), tarefa de prioridade alta (+30), treino (+20)\n- Streak geral de engajamento diário, mais uma streak separada só de treino — ambas ao estilo Duolingo: quebrar a sequência custa XP, não é só um reset neutro\n- 13 conquistas desbloqueáveis, cobrindo os 4 módulos e marcos de XP/streak\n- Banco de 50 frases motivacionais (tom caloroso ao completar, agressivo ao quebrar streak)\n- Overlay de celebração com animação Lottie, XP ganho e conquistas desbloqueadas, disparado a cada ação recompensada\n- Tela de Perfil real: XP total, streaks, lista de conquistas (desbloqueadas com data, bloqueadas como \"???\")\n\nValidado ponta a ponta em dispositivo Android real: hábito, tarefa de alta prioridade e treino todos disparando XP e conquistas corretamente.",
     "publishAt": "2026-09-21T00:10:00Z"
+  },
+  {
+    "branch": "release/v0.8.0",
+    "tag": "v0.8.0",
+    "title": "v0.8.0 — Notificações",
+    "notes": "Fase 4 do plano: notificações locais ao estilo Duolingo, mais dois ajustes pedidos nos módulos existentes.\n\n- Lembrete de hábito no horário configurado (UC04, adiado desde a Fase 1) — cancela sozinho se o hábito já foi concluído no dia\n- Aviso de streak em risco às 20h, só dispara se o usuário ainda não fez nada no dia — some assim que uma ação é registrada\n- Lembretes fixos de água ao longo do dia, com botão de ação \"+1 copo\" direto na notificação, sem precisar abrir o app\n- Estudos: campo opcional de quantas questões foram respondidas na sessão\n- Canais Android separados por tipo (sequência/hábitos/água) e pedido de permissão de notificação\n\nValidado ponta a ponta em dispositivo Android real: lembrete de hábito disparou no horário certo com o texto certo; lembrete de água disparou com o botão de ação visível e funcional.",
+    "publishAt": "2026-09-27T15:35:00Z"
   }
 ]
