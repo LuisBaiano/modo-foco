@@ -3,35 +3,35 @@
     "branch": "release/v0.4.0",
     "tag": "v0.4.0",
     "title": "v0.4.0 — Tarefas & Projetos",
-    "notes": "Segundo módulo funcional: Tarefas & Projetos (UC09-12 da spec).\n\n- Criar tarefa (título, prioridade, prazo rápido hoje/amanhã/sem prazo, projeto opcional)\n- Concluir/reabrir tarefa direto na lista, ordenada por prioridade e prazo\n- Badges de prioridade, projeto e prazo (com aviso de atrasada)\n- Projetos: criar com cor e descrição, progresso calculado automaticamente a partir das tarefas vinculadas\n- Excluir projeto não apaga as tarefas, só desvincula\n\nMesmo padrão de arquitetura do módulo Hábitos (repository + hook + navegação aninhada), agora usando a cor de destaque personalizável em toda a interface.\n\nValidado ponta a ponta em dispositivo Android real.",
+    "notes": "Segundo módulo pronto: Tarefas & Projetos. Cria tarefa com prioridade, prazo rápido (hoje/amanhã/sem prazo) e projeto opcional, marca como concluída direto na lista sem abrir nada. Projeto tem cor própria e o progresso é calculado sozinho pelas tarefas vinculadas, não precisa atualizar na mão. Excluir projeto não apaga as tarefas, só desvincula elas. Rodei bastante no celular antes de fechar, tá estável.",
     "publishAt": "2026-08-30T22:47:00Z"
   },
   {
     "branch": "release/v0.5.0",
     "tag": "v0.5.0",
     "title": "v0.5.0 — Estudos",
-    "notes": "Terceiro módulo funcional: Estudos (UC13-16 da spec).\n\n- Iniciar sessão de estudo por matéria, em modo Pomodoro (25min foco / 5min pausa, com contagem de ciclos) ou modo Livre (cronômetro corrido)\n- Encerrar sessão com anotação curta e avaliação de produtividade\n- Estatísticas da semana: total de horas estudadas e distribuição por matéria\n- Histórico de sessões recentes\n\nMesmo padrão de arquitetura dos módulos anteriores (repository + hook + navegação aninhada). Relógio recalculado a partir de timestamps reais, não decrementado ingenuamente, então não desanda se o app travar um instante.\n\nValidado ponta a ponta em dispositivo Android real, incluindo os dois modos de sessão.",
+    "notes": "Estudos no ar. Pomodoro 25/5 com contagem de ciclo, ou modo livre pra quem só quer cronometrar. No fim da sessão dá pra anotar o que estudou e avaliar a produtividade. Tem resumo semanal por matéria e histórico das sessões recentes. Detalhe técnico que vale registrar: o relógio recalcula a partir do horário real a cada segundo em vez de só decrementar um contador — evita o timer desandar se o app travar um instante.",
     "publishAt": "2026-09-05T18:23:00Z"
   },
   {
     "branch": "release/v0.6.0",
     "tag": "v0.6.0",
     "title": "v0.6.0 — Saúde",
-    "notes": "Quarto módulo funcional: Saúde (UC17-20 da spec).\n\n- Água: +250ml por toque, meta padrão de 8 copos/dia\n- Check-in diário de humor com 5 emojis\n- Registrar treino (tipo + duração + anotação) e refeição (tipo + anotação, sem contagem de calorias e sem julgamento)\n- Resumo da semana: treinos, minutos ativos, copos de água e humor médio\n- Histórico de treinos e refeições recentes\n\nMesmo padrão de arquitetura dos módulos anteriores (repository + hook + navegação aninhada). Tabelas do banco já existiam desde a Fase 1, só faltava a camada funcional.\n\nValidado ponta a ponta em dispositivo Android real.",
+    "notes": "Quarto módulo: Saúde.\n\n- Água: um toque = +250ml, sem meta cobrando, só acompanhando\n- Humor: check-in diário com 5 carinhas\n- Treino e refeição registráveis rapidinho (refeição sem contar caloria, de propósito)\n- Resumo da semana com tudo junto\n\nSimples e direto, não quis complicar esse aqui.",
     "publishAt": "2026-09-13T14:05:00Z"
   },
   {
     "branch": "release/v0.7.0",
     "tag": "v0.7.0",
     "title": "v0.7.0 — Gamificação",
-    "notes": "Fase 3 do plano: motor de XP, streaks e conquistas por trás dos 4 módulos.\n\n- XP por ação: hábito concluído (+10), estudo (+1/min), tarefa de prioridade alta (+30), treino (+20)\n- Streak geral de engajamento diário, mais uma streak separada só de treino — ambas ao estilo Duolingo: quebrar a sequência custa XP, não é só um reset neutro\n- 13 conquistas desbloqueáveis, cobrindo os 4 módulos e marcos de XP/streak\n- Banco de 50 frases motivacionais (tom caloroso ao completar, agressivo ao quebrar streak)\n- Overlay de celebração com animação Lottie, XP ganho e conquistas desbloqueadas, disparado a cada ação recompensada\n- Tela de Perfil real: XP total, streaks, lista de conquistas (desbloqueadas com data, bloqueadas como \"???\")\n\nValidado ponta a ponta em dispositivo Android real: hábito, tarefa de alta prioridade e treino todos disparando XP e conquistas corretamente.",
+    "notes": "Esse módulo foi o mais trabalhoso até agora: XP, streak e conquistas de verdade. Hábito concluído rende XP, estudo rende por minuto, tarefa de prioridade alta rende bem mais que o resto, treino também soma. Streak é no estilo Duolingo mesmo — quebra a sequência e dói, custa XP, não é só um número que zera educadamente. Treino tem streak própria, separada da geral. 13 conquistas escondidas (aparecem como \"???\" até desbloquear), banco de 50 frases pra não repetir sempre a mesma coisa, e uma animação de celebração toda vez que rola recompensa. Perfil deixou de ser tela de teste e virou tela de verdade.",
     "publishAt": "2026-09-21T00:10:00Z"
   },
   {
     "branch": "release/v0.8.0",
     "tag": "v0.8.0",
     "title": "v0.8.0 — Notificações",
-    "notes": "Fase 4 do plano: notificações locais ao estilo Duolingo, mais dois ajustes pedidos nos módulos existentes.\n\n- Lembrete de hábito no horário configurado (UC04, adiado desde a Fase 1) — cancela sozinho se o hábito já foi concluído no dia\n- Aviso de streak em risco às 20h, só dispara se o usuário ainda não fez nada no dia — some assim que uma ação é registrada\n- Lembretes fixos de água ao longo do dia, com botão de ação \"+1 copo\" direto na notificação, sem precisar abrir o app\n- Estudos: campo opcional de quantas questões foram respondidas na sessão\n- Canais Android separados por tipo (sequência/hábitos/água) e pedido de permissão de notificação\n\nValidado ponta a ponta em dispositivo Android real: lembrete de hábito disparou no horário certo com o texto certo; lembrete de água disparou com o botão de ação visível e funcional.",
+    "notes": "Última peça dessa rodada: notificações. Hábito com horário configurado lembra na hora certa e some sozinho se você já marcou como feito. Se o dia tá acabando sem nenhuma atividade, chega um aviso de streak em risco lá pelas 20h — desaparece assim que você faz alguma coisa, sem ficar insistindo à toa. Água ganhou lembretes ao longo do dia com botão de \"+1 copo\" direto na notificação. Aproveitei e adicionei também um campo de questões respondidas nas sessões de estudo, que tava faltando. Com isso fecho essa leva de features por enquanto.",
     "publishAt": "2026-09-27T15:35:00Z"
   }
 ]
