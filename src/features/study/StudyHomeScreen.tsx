@@ -95,6 +95,7 @@ function StudyHomeScreen() {
               <Text style={styles.sessionMeta}>
                 {formatSessionDate(session.startedAt)}
                 {session.mode === 'pomodoro' ? ` · ${session.cycles} ciclos` : ''}
+                {session.questionsAnswered != null ? ` · ${session.questionsAnswered} questões` : ''}
               </Text>
             </View>
           ))}

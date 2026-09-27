@@ -15,6 +15,7 @@ export type StudySession = {
   cycles: number;
   notes: string | null;
   productivityRating: ProductivityRating | null;
+  questionsAnswered: number | null;
 };
 
 export type SubjectMinutes = { subject: string; minutes: number };
@@ -65,13 +66,18 @@ export async function incrementCycles(sessionId: number) {
  */
 export async function endSession(
   sessionId: number,
-  input: { notes: string | null; productivityRating: ProductivityRating | null },
+  input: { notes: string | null; productivityRating: ProductivityRating | null; questionsAnswered: number | null },
 ): Promise<RewardResult | null> {
   const session = await getSession(sessionId);
   const endedAt = new Date();
   await db
     .update(studySessions)
-    .set({ endedAt, notes: input.notes, productivityRating: input.productivityRating })
+    .set({
+      endedAt,
+      notes: input.notes,
+      productivityRating: input.productivityRating,
+      questionsAnswered: input.questionsAnswered,
+    })
     .where(eq(studySessions.id, sessionId));
 
   if (!session) {

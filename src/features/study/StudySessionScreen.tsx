@@ -41,6 +41,7 @@ function StudySessionScreen() {
   const [freeElapsedSeconds, setFreeElapsedSeconds] = useState(0);
   const [notes, setNotes] = useState('');
   const [rating, setRating] = useState<ProductivityRating | null>(null);
+  const [questions, setQuestions] = useState('');
 
   // refs espelhando o estado pro tick do setInterval nunca ler uma closure velha
   const phaseRef = useRef<Phase>('focus');
@@ -79,7 +80,12 @@ function StudySessionScreen() {
   }, [screenState, mode, sessionId]);
 
   const handleSaveSummary = async () => {
-    const reward = await endSession(sessionId, { notes: notes.trim() || null, productivityRating: rating });
+    const parsedQuestions = parseInt(questions, 10);
+    const reward = await endSession(sessionId, {
+      notes: notes.trim() || null,
+      productivityRating: rating,
+      questionsAnswered: Number.isNaN(parsedQuestions) ? null : parsedQuestions,
+    });
     emitCelebration(reward);
     navigation.goBack();
   };
@@ -94,6 +100,15 @@ function StudySessionScreen() {
           onChangeText={setNotes}
           placeholder="Anotação curta, opcional..."
           multiline
+        />
+
+        <Text style={[styles.label, { color: accent }]}>Quantas questões você respondeu? (opcional)</Text>
+        <TextInput
+          style={styles.input}
+          value={questions}
+          onChangeText={setQuestions}
+          placeholder="Ex: 20"
+          keyboardType="number-pad"
         />
 
         <Text style={[styles.label, { color: accent }]}>Como foi a produtividade?</Text>

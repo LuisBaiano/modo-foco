@@ -2,8 +2,14 @@ import { useCallback, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { type HabitWithTodayStatus, listHabitsWithTodayStatus, toggleHabitToday } from './habitsRepository';
 import { emitCelebration } from '../gamification/celebrationBus';
+import { rescheduleHabitReminders } from '../notifications/habitReminders';
 
-/** Lista de hábitos do dia; refaz a busca sempre que a tela ganha foco. */
+/**
+ * Lista de hábitos do dia; refaz a busca sempre que a tela ganha foco.
+ * Também reagenda os lembretes de horário a cada busca — cobre criar/editar/
+ * excluir/concluir hábito sem precisar de wiring extra nessas telas, já que
+ * todas elas retornam pra essa lista e disparam o refetch por foco.
+ */
 export function useHabits() {
   const [habits, setHabits] = useState<HabitWithTodayStatus[]>([]);
   const [loading, setLoading] = useState(true);
@@ -11,7 +17,9 @@ export function useHabits() {
   const refresh = useCallback(async () => {
     setLoading(true);
     try {
-      setHabits(await listHabitsWithTodayStatus());
+      const list = await listHabitsWithTodayStatus();
+      setHabits(list);
+      rescheduleHabitReminders(list);
     } finally {
       setLoading(false);
     }

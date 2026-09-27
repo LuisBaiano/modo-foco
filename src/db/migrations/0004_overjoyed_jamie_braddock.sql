@@ -1,0 +1,1 @@
+ALTER TABLE `study_sessions` ADD `questions_answered` integer;

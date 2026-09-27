@@ -6,6 +6,14 @@ import { useTheme } from '../../app/ThemeContext';
 import type { HabitsStackParamList } from './HabitsNavigator';
 import { type Frequency, createHabit, getHabit, updateHabit } from './habitsRepository';
 
+function parseTargetTime(value: string | null): { hour: string; minute: string } {
+  if (!value) {
+    return { hour: '', minute: '' };
+  }
+  const [hour, minute] = value.split(':');
+  return { hour: hour ?? '', minute: minute ?? '' };
+}
+
 type Props = NativeStackScreenProps<HabitsStackParamList, 'HabitForm'>;
 
 /** Formulário de criar/editar hábito. Sem habitId na rota = criação. */
@@ -17,6 +25,8 @@ function HabitFormScreen() {
 
   const [name, setName] = useState('');
   const [frequency, setFrequency] = useState<Frequency>('daily');
+  const [hour, setHour] = useState('');
+  const [minute, setMinute] = useState('');
 
   useEffect(() => {
     if (habitId != null) {
@@ -24,19 +34,29 @@ function HabitFormScreen() {
         if (habit) {
           setName(habit.name);
           setFrequency(habit.frequency as Frequency);
+          const parsed = parseTargetTime(habit.targetTime);
+          setHour(parsed.hour);
+          setMinute(parsed.minute);
         }
       });
     }
   }, [habitId]);
+
+  const parsedHour = parseInt(hour, 10);
+  const parsedMinute = parseInt(minute, 10);
+  const hasValidTime = !Number.isNaN(parsedHour) && !Number.isNaN(parsedMinute) && parsedHour >= 0 && parsedHour <= 23 && parsedMinute >= 0 && parsedMinute <= 59;
+  const targetTime = hasValidTime
+    ? `${String(parsedHour).padStart(2, '0')}:${String(parsedMinute).padStart(2, '0')}`
+    : null;
 
   const handleSave = async () => {
     if (!name.trim()) {
       return;
     }
     if (habitId != null) {
-      await updateHabit(habitId, { name: name.trim(), frequency });
+      await updateHabit(habitId, { name: name.trim(), frequency, targetTime });
     } else {
-      await createHabit({ name: name.trim(), frequency });
+      await createHabit({ name: name.trim(), frequency, targetTime });
     }
     navigation.goBack();
   };
@@ -65,6 +85,27 @@ function HabitFormScreen() {
           selected={frequency === 'weekly'}
           accent={accent}
           onPress={() => setFrequency('weekly')}
+        />
+      </View>
+
+      <Text style={[styles.label, { color: accent }]}>Lembrete (opcional)</Text>
+      <View style={styles.timeRow}>
+        <TextInput
+          style={styles.timeInput}
+          value={hour}
+          onChangeText={setHour}
+          placeholder="HH"
+          keyboardType="number-pad"
+          maxLength={2}
+        />
+        <Text style={styles.timeSeparator}>:</Text>
+        <TextInput
+          style={styles.timeInput}
+          value={minute}
+          onChangeText={setMinute}
+          placeholder="MM"
+          keyboardType="number-pad"
+          maxLength={2}
         />
       </View>
 
@@ -130,6 +171,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   segmentedOptionText: {
+    fontWeight: '700',
+  },
+  timeRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  timeInput: {
+    backgroundColor: 'white',
+    borderRadius: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    fontSize: 16,
+    elevation: 1,
+    width: 70,
+    textAlign: 'center',
+  },
+  timeSeparator: {
+    fontSize: 18,
     fontWeight: '700',
   },
   saveButton: {

@@ -65,6 +65,8 @@ export const studySessions = sqliteTable('study_sessions', {
   /** Anotação curta e opcional preenchida ao final da sessão. */
   notes: text('notes'),
   productivityRating: text('productivity_rating', { enum: ['low', 'medium', 'high'] }),
+  /** Número de questões respondidas na sessão, opcional (ex: cursinho, resolução de exercícios). */
+  questionsAnswered: integer('questions_answered'),
 });
 
 /** Registro de treino/atividade física. */
