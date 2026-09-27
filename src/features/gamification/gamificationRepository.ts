@@ -3,6 +3,7 @@ import { db } from '../../db/client';
 import { achievements, userXp } from '../../db/schema';
 import { ACHIEVEMENTS } from './achievementsCatalog';
 import type { Priority } from '../tasks/tasksRepository';
+import { rescheduleStreakReminder } from '../notifications/streakReminder';
 
 export type UnlockedAchievement = { key: string; title: string; description: string };
 export type RewardResult = { xpGained: number; achievements: UnlockedAchievement[]; streakBroken: boolean };
@@ -72,6 +73,8 @@ async function recordDailyActivity(): Promise<{ streakBroken: boolean }> {
     .update(userXp)
     .set({ currentStreak: newStreak, longestStreak, lastActiveDate: today, totalXp: xpAfterPenalty })
     .where(eq(userXp.id, row.id));
+
+  await rescheduleStreakReminder(true);
 
   return { streakBroken };
 }
@@ -164,6 +167,12 @@ export type UserXpSummary = {
   workoutStreak: number;
   longestWorkoutStreak: number;
 };
+
+/** Se o usuário já fez alguma ação que conta pra streak geral hoje — usado pra decidir o aviso de streak. */
+export async function isActiveToday(): Promise<boolean> {
+  const row = await getOrCreateXpRow();
+  return row.lastActiveDate === todayISODate();
+}
 
 export async function getUserXpSummary(): Promise<UserXpSummary> {
   const row = await getOrCreateXpRow();
