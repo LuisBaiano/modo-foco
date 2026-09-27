@@ -11,6 +11,8 @@ export type HabitWithTodayStatus = {
   frequency: Frequency;
   /** Se já foi marcado como feito hoje. */
   completedToday: boolean;
+  /** Horário do lembrete no formato HH:MM, ou null se não configurado. */
+  targetTime: string | null;
 };
 
 export type HabitHistoryDay = { date: string; completed: boolean };
@@ -27,6 +29,7 @@ export async function listHabitsWithTodayStatus(): Promise<HabitWithTodayStatus[
       id: habits.id,
       name: habits.name,
       frequency: habits.frequency,
+      targetTime: habits.targetTime,
       completed: habitLogs.completed,
     })
     .from(habits)
@@ -37,6 +40,7 @@ export async function listHabitsWithTodayStatus(): Promise<HabitWithTodayStatus[
     id: row.id,
     name: row.name,
     frequency: row.frequency as Frequency,
+    targetTime: row.targetTime,
     completedToday: row.completed === true,
   }));
 }
@@ -46,16 +50,23 @@ export async function getHabit(habitId: number) {
   return habit;
 }
 
-export async function createHabit(input: { name: string; frequency: Frequency }) {
+export async function createHabit(input: { name: string; frequency: Frequency; targetTime: string | null }) {
   await db.insert(habits).values({
     name: input.name,
     frequency: input.frequency,
+    targetTime: input.targetTime,
     createdAt: new Date(),
   });
 }
 
-export async function updateHabit(habitId: number, input: { name: string; frequency: Frequency }) {
-  await db.update(habits).set({ name: input.name, frequency: input.frequency }).where(eq(habits.id, habitId));
+export async function updateHabit(
+  habitId: number,
+  input: { name: string; frequency: Frequency; targetTime: string | null },
+) {
+  await db
+    .update(habits)
+    .set({ name: input.name, frequency: input.frequency, targetTime: input.targetTime })
+    .where(eq(habits.id, habitId));
 }
 
 /** Exclui o hábito e todo o seu histórico de logs. */
