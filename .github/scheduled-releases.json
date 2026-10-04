@@ -33,5 +33,12 @@
     "title": "v0.8.0 — Notificações",
     "notes": "Última peça dessa rodada: notificações. Hábito com horário configurado lembra na hora certa e some sozinho se você já marcou como feito. Se o dia tá acabando sem nenhuma atividade, chega um aviso de streak em risco lá pelas 20h — desaparece assim que você faz alguma coisa, sem ficar insistindo à toa. Água ganhou lembretes ao longo do dia com botão de \"+1 copo\" direto na notificação. Aproveitei e adicionei também um campo de questões respondidas nas sessões de estudo, que tava faltando. Com isso fecho essa leva de features por enquanto.",
     "publishAt": "2026-09-27T15:35:00Z"
+  },
+  {
+    "branch": "release/v0.9.0",
+    "tag": "v0.9.0",
+    "title": "v0.9.0 — Tema escuro",
+    "notes": "Pedido antigo que enfim entrou: tema escuro em todo o app, não só uma casca por cima. Perfil ganhou um seletor (Claro/Escuro/Sistema) e o Sistema realmente acompanha a configuração do aparelho. Fundo é preto puro de propósito — em tela AMOLED isso desliga o pixel de verdade e economiza bateria, não é só estética. Ajustei também os ícones da barra de baixo pra ficarem brancos no escuro, que antes ficavam meio apagados. Foi um trampo grande de mexer tela por tela, mas testei módulo por módulo no celular pra garantir que nada ficou com texto sumindo no fundo.",
+    "publishAt": "2026-10-04T19:50:00Z"
   }
 ]
