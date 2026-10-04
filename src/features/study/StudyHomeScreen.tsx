@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
-import { useTheme } from '../../app/ThemeContext';
+import { useTheme, type Palette } from '../../app/ThemeContext';
 import { useStudyHome } from './useStudyHome';
 import type { StudyStackParamList } from './StudyNavigator';
 import { type StudyMode, type StudySession, startSession } from './studyRepository';
@@ -23,7 +23,8 @@ function formatSessionDate(date: Date): string {
 /** Tela principal da aba Estudos: iniciar sessão + estatísticas da semana. */
 function StudyHomeScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<StudyStackParamList>>();
-  const { accent } = useTheme();
+  const { accent, colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const { stats, recentSessions, loading } = useStudyHome();
 
   const [subject, setSubject] = useState('');
@@ -47,10 +48,11 @@ function StudyHomeScreen() {
         value={subject}
         onChangeText={setSubject}
         placeholder="Ex: Cálculo, Inglês, React Native..."
+        placeholderTextColor={colors.textSecondary}
       />
       <View style={styles.segmented}>
-        <ModeChip label="Pomodoro" selected={mode === 'pomodoro'} accent={accent} onPress={() => setMode('pomodoro')} />
-        <ModeChip label="Livre" selected={mode === 'free'} accent={accent} onPress={() => setMode('free')} />
+        <ModeChip label="Pomodoro" selected={mode === 'pomodoro'} accent={accent} styles={styles} onPress={() => setMode('pomodoro')} />
+        <ModeChip label="Livre" selected={mode === 'free'} accent={accent} styles={styles} onPress={() => setMode('free')} />
       </View>
       <Pressable
         style={[styles.startButton, { backgroundColor: accent }, !subject.trim() && styles.startButtonDisabled]}
@@ -109,11 +111,13 @@ function ModeChip({
   label,
   selected,
   accent,
+  styles,
   onPress,
 }: {
   label: string;
   selected: boolean;
   accent: string;
+  styles: ReturnType<typeof createStyles>;
   onPress: () => void;
 }) {
   return (
@@ -123,129 +127,132 @@ function ModeChip({
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f7f7fb',
-  },
-  content: {
-    padding: 20,
-    paddingBottom: 40,
-  },
-  label: {
-    fontSize: 13,
-    fontWeight: '700',
-    marginBottom: 10,
-  },
-  statsLabel: {
-    marginTop: 32,
-  },
-  input: {
-    backgroundColor: 'white',
-    borderRadius: 16,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    fontSize: 16,
-    elevation: 1,
-  },
-  segmented: {
-    flexDirection: 'row',
-    gap: 8,
-    marginTop: 12,
-  },
-  chip: {
-    flex: 1,
-    paddingVertical: 12,
-    borderRadius: 14,
-    backgroundColor: 'white',
-    alignItems: 'center',
-  },
-  chipText: {
-    fontWeight: '700',
-  },
-  startButton: {
-    marginTop: 20,
-    borderRadius: 16,
-    paddingVertical: 16,
-    alignItems: 'center',
-    elevation: 3,
-  },
-  startButtonDisabled: {
-    opacity: 0.4,
-  },
-  startButtonText: {
-    color: 'white',
-    fontWeight: '700',
-    fontSize: 16,
-  },
-  statsCard: {
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 20,
-    elevation: 1,
-    alignItems: 'center',
-  },
-  totalHours: {
-    fontSize: 32,
-    fontWeight: '800',
-    color: '#1f2937',
-  },
-  totalHoursCaption: {
-    fontSize: 13,
-    color: '#6b7280',
-    marginTop: 2,
-  },
-  chart: {
-    width: '100%',
-    marginTop: 20,
-    gap: 12,
-  },
-  chartRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  chartLabel: {
-    width: 70,
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#4b5563',
-  },
-  chartTrack: {
-    flex: 1,
-    height: 10,
-    borderRadius: 5,
-    backgroundColor: '#f3f4f6',
-    overflow: 'hidden',
-  },
-  chartFill: {
-    height: '100%',
-    borderRadius: 5,
-  },
-  chartMinutes: {
-    width: 50,
-    fontSize: 11,
-    color: '#6b7280',
-    textAlign: 'right',
-  },
-  sessionRow: {
-    backgroundColor: 'white',
-    borderRadius: 16,
-    padding: 16,
-    marginBottom: 10,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    elevation: 1,
-  },
-  sessionSubject: {
-    fontWeight: '700',
-    color: '#1f2937',
-  },
-  sessionMeta: {
-    fontSize: 12,
-    color: '#6b7280',
-  },
-});
+function createStyles(colors: Palette) {
+  return StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    content: {
+      padding: 20,
+      paddingBottom: 40,
+    },
+    label: {
+      fontSize: 13,
+      fontWeight: '700',
+      marginBottom: 10,
+    },
+    statsLabel: {
+      marginTop: 32,
+    },
+    input: {
+      backgroundColor: colors.surface,
+      borderRadius: 16,
+      paddingHorizontal: 16,
+      paddingVertical: 14,
+      fontSize: 16,
+      elevation: 1,
+      color: colors.text,
+    },
+    segmented: {
+      flexDirection: 'row',
+      gap: 8,
+      marginTop: 12,
+    },
+    chip: {
+      flex: 1,
+      paddingVertical: 12,
+      borderRadius: 14,
+      backgroundColor: colors.surface,
+      alignItems: 'center',
+    },
+    chipText: {
+      fontWeight: '700',
+    },
+    startButton: {
+      marginTop: 20,
+      borderRadius: 16,
+      paddingVertical: 16,
+      alignItems: 'center',
+      elevation: 3,
+    },
+    startButtonDisabled: {
+      opacity: 0.4,
+    },
+    startButtonText: {
+      color: 'white',
+      fontWeight: '700',
+      fontSize: 16,
+    },
+    statsCard: {
+      backgroundColor: colors.surface,
+      borderRadius: 20,
+      padding: 20,
+      elevation: 1,
+      alignItems: 'center',
+    },
+    totalHours: {
+      fontSize: 32,
+      fontWeight: '800',
+      color: colors.text,
+    },
+    totalHoursCaption: {
+      fontSize: 13,
+      color: colors.textSecondary,
+      marginTop: 2,
+    },
+    chart: {
+      width: '100%',
+      marginTop: 20,
+      gap: 12,
+    },
+    chartRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 8,
+    },
+    chartLabel: {
+      width: 70,
+      fontSize: 12,
+      fontWeight: '600',
+      color: colors.textSecondary,
+    },
+    chartTrack: {
+      flex: 1,
+      height: 10,
+      borderRadius: 5,
+      backgroundColor: colors.surfaceAlt,
+      overflow: 'hidden',
+    },
+    chartFill: {
+      height: '100%',
+      borderRadius: 5,
+    },
+    chartMinutes: {
+      width: 50,
+      fontSize: 11,
+      color: colors.textSecondary,
+      textAlign: 'right',
+    },
+    sessionRow: {
+      backgroundColor: colors.surface,
+      borderRadius: 16,
+      padding: 16,
+      marginBottom: 10,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      elevation: 1,
+    },
+    sessionSubject: {
+      fontWeight: '700',
+      color: colors.text,
+    },
+    sessionMeta: {
+      fontSize: 12,
+      color: colors.textSecondary,
+    },
+  });
+}
 
 export default StudyHomeScreen;

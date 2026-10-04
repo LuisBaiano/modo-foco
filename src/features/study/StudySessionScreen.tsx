@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import type { NativeStackNavigationProp, NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
-import { useTheme } from '../../app/ThemeContext';
+import { useTheme, type Palette } from '../../app/ThemeContext';
 import type { StudyStackParamList } from './StudyNavigator';
 import { type ProductivityRating, endSession, incrementCycles } from './studyRepository';
 import { emitCelebration } from '../gamification/celebrationBus';
@@ -32,7 +32,8 @@ function StudySessionScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<StudyStackParamList>>();
   const route = useRoute<Props['route']>();
   const { sessionId, mode, subject } = route.params;
-  const { accent } = useTheme();
+  const { accent, colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
 
   const [screenState, setScreenState] = useState<ScreenState>('running');
   const [phase, setPhase] = useState<Phase>('focus');
@@ -99,6 +100,7 @@ function StudySessionScreen() {
           value={notes}
           onChangeText={setNotes}
           placeholder="Anotação curta, opcional..."
+          placeholderTextColor={colors.textSecondary}
           multiline
         />
 
@@ -108,14 +110,15 @@ function StudySessionScreen() {
           value={questions}
           onChangeText={setQuestions}
           placeholder="Ex: 20"
+          placeholderTextColor={colors.textSecondary}
           keyboardType="number-pad"
         />
 
         <Text style={[styles.label, { color: accent }]}>Como foi a produtividade?</Text>
         <View style={styles.ratingRow}>
-          <RatingOption emoji="😐" selected={rating === 'low'} accent={accent} onPress={() => setRating('low')} />
-          <RatingOption emoji="😊" selected={rating === 'medium'} accent={accent} onPress={() => setRating('medium')} />
-          <RatingOption emoji="🔥" selected={rating === 'high'} accent={accent} onPress={() => setRating('high')} />
+          <RatingOption emoji="😐" selected={rating === 'low'} accent={accent} styles={styles} onPress={() => setRating('low')} />
+          <RatingOption emoji="😊" selected={rating === 'medium'} accent={accent} styles={styles} onPress={() => setRating('medium')} />
+          <RatingOption emoji="🔥" selected={rating === 'high'} accent={accent} styles={styles} onPress={() => setRating('high')} />
         </View>
 
         <Pressable style={[styles.saveButton, { backgroundColor: accent }]} onPress={handleSaveSummary}>
@@ -149,11 +152,13 @@ function RatingOption({
   emoji,
   selected,
   accent,
+  styles,
   onPress,
 }: {
   emoji: string;
   selected: boolean;
   accent: string;
+  styles: ReturnType<typeof createStyles>;
   onPress: () => void;
 }) {
   return (
@@ -165,96 +170,99 @@ function RatingOption({
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f7f7fb',
-    padding: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  subject: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#1f2937',
-    marginBottom: 8,
-  },
-  phaseLabel: {
-    fontSize: 15,
-    fontWeight: '700',
-    marginBottom: 12,
-  },
-  clock: {
-    fontSize: 64,
-    fontWeight: '800',
-    color: '#1f2937',
-    fontVariant: ['tabular-nums'],
-  },
-  cyclesText: {
-    marginTop: 12,
-    fontSize: 13,
-    color: '#6b7280',
-  },
-  endButton: {
-    marginTop: 48,
-    borderRadius: 16,
-    paddingVertical: 16,
-    paddingHorizontal: 40,
-    alignItems: 'center',
-  },
-  endButtonText: {
-    color: 'white',
-    fontWeight: '700',
-    fontSize: 16,
-  },
-  label: {
-    alignSelf: 'flex-start',
-    fontSize: 13,
-    fontWeight: '700',
-    marginBottom: 10,
-    marginTop: 20,
-  },
-  input: {
-    width: '100%',
-    backgroundColor: 'white',
-    borderRadius: 16,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    fontSize: 16,
-    elevation: 1,
-  },
-  textArea: {
-    minHeight: 80,
-    textAlignVertical: 'top',
-  },
-  ratingRow: {
-    flexDirection: 'row',
-    gap: 16,
-  },
-  ratingOption: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: 'white',
-    alignItems: 'center',
-    justifyContent: 'center',
-    elevation: 1,
-  },
-  ratingEmoji: {
-    fontSize: 28,
-  },
-  saveButton: {
-    marginTop: 40,
-    borderRadius: 16,
-    paddingVertical: 16,
-    paddingHorizontal: 48,
-    alignItems: 'center',
-  },
-  saveButtonText: {
-    color: 'white',
-    fontWeight: '700',
-    fontSize: 16,
-  },
-});
+function createStyles(colors: Palette) {
+  return StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+      padding: 20,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    subject: {
+      fontSize: 18,
+      fontWeight: '700',
+      color: colors.text,
+      marginBottom: 8,
+    },
+    phaseLabel: {
+      fontSize: 15,
+      fontWeight: '700',
+      marginBottom: 12,
+    },
+    clock: {
+      fontSize: 64,
+      fontWeight: '800',
+      color: colors.text,
+      fontVariant: ['tabular-nums'],
+    },
+    cyclesText: {
+      marginTop: 12,
+      fontSize: 13,
+      color: colors.textSecondary,
+    },
+    endButton: {
+      marginTop: 48,
+      borderRadius: 16,
+      paddingVertical: 16,
+      paddingHorizontal: 40,
+      alignItems: 'center',
+    },
+    endButtonText: {
+      color: 'white',
+      fontWeight: '700',
+      fontSize: 16,
+    },
+    label: {
+      alignSelf: 'flex-start',
+      fontSize: 13,
+      fontWeight: '700',
+      marginBottom: 10,
+      marginTop: 20,
+    },
+    input: {
+      width: '100%',
+      backgroundColor: colors.surface,
+      borderRadius: 16,
+      paddingHorizontal: 16,
+      paddingVertical: 14,
+      fontSize: 16,
+      elevation: 1,
+      color: colors.text,
+    },
+    textArea: {
+      minHeight: 80,
+      textAlignVertical: 'top',
+    },
+    ratingRow: {
+      flexDirection: 'row',
+      gap: 16,
+    },
+    ratingOption: {
+      width: 60,
+      height: 60,
+      borderRadius: 30,
+      backgroundColor: colors.surface,
+      alignItems: 'center',
+      justifyContent: 'center',
+      elevation: 1,
+    },
+    ratingEmoji: {
+      fontSize: 28,
+    },
+    saveButton: {
+      marginTop: 40,
+      borderRadius: 16,
+      paddingVertical: 16,
+      paddingHorizontal: 48,
+      alignItems: 'center',
+    },
+    saveButtonText: {
+      color: 'white',
+      fontWeight: '700',
+      fontSize: 16,
+    },
+  });
+}
 
 export default StudySessionScreen;
