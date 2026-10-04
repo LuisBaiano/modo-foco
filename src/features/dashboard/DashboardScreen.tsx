@@ -1,12 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { db, runMigrations } from '../../db/client';
 import { userXp } from '../../db/schema';
+import { useTheme, type Palette } from '../../app/ThemeContext';
 
 type DbStatus = { state: 'loading' } | { state: 'ready'; rows: number } | { state: 'error'; message: string };
 
 function DashboardScreen() {
   const [dbStatus, setDbStatus] = useState<DbStatus>({ state: 'loading' });
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
 
   useEffect(() => {
     runMigrations()
@@ -38,26 +41,32 @@ function describeDbStatus(status: DbStatus) {
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: '700',
-  },
-  subtitle: {
-    marginTop: 8,
-    fontSize: 14,
-    opacity: 0.6,
-  },
-  dbStatus: {
-    marginTop: 24,
-    fontSize: 12,
-    opacity: 0.5,
-  },
-});
+function createStyles(colors: Palette) {
+  return StyleSheet.create({
+    container: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: colors.background,
+    },
+    title: {
+      fontSize: 24,
+      fontWeight: '700',
+      color: colors.text,
+    },
+    subtitle: {
+      marginTop: 8,
+      fontSize: 14,
+      opacity: 0.6,
+      color: colors.text,
+    },
+    dbStatus: {
+      marginTop: 24,
+      fontSize: 12,
+      opacity: 0.5,
+      color: colors.text,
+    },
+  });
+}
 
 export default DashboardScreen;
