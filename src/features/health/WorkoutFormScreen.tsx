@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
-import { useTheme } from '../../app/ThemeContext';
+import { useTheme, type Palette } from '../../app/ThemeContext';
 import type { HealthStackParamList } from './HealthNavigator';
 import { type WorkoutType, logWorkout } from './healthRepository';
 import { emitCelebration } from '../gamification/celebrationBus';
@@ -18,7 +18,8 @@ const WORKOUT_TYPES: { value: WorkoutType; label: string }[] = [
 /** Formulário de registro de treino do dia. */
 function WorkoutFormScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<HealthStackParamList>>();
-  const { accent } = useTheme();
+  const { accent, colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
 
   const [type, setType] = useState<WorkoutType>('walk');
   const [duration, setDuration] = useState('');
@@ -58,6 +59,7 @@ function WorkoutFormScreen() {
         value={duration}
         onChangeText={setDuration}
         placeholder="Ex: 30"
+        placeholderTextColor={colors.textSecondary}
         keyboardType="number-pad"
       />
 
@@ -67,6 +69,7 @@ function WorkoutFormScreen() {
         value={notes}
         onChangeText={setNotes}
         placeholder="Como foi o treino..."
+        placeholderTextColor={colors.textSecondary}
         multiline
       />
 
@@ -80,60 +83,63 @@ function WorkoutFormScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: '#f7f7fb',
-  },
-  label: {
-    fontSize: 13,
-    fontWeight: '700',
-    marginBottom: 10,
-    marginTop: 20,
-  },
-  input: {
-    backgroundColor: 'white',
-    borderRadius: 16,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    fontSize: 16,
-    elevation: 1,
-  },
-  textArea: {
-    minHeight: 80,
-    textAlignVertical: 'top',
-  },
-  chipWrap: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-  },
-  chip: {
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    borderRadius: 14,
-    backgroundColor: 'white',
-  },
-  chipText: {
-    fontWeight: '700',
-    fontSize: 13,
-  },
-  saveButton: {
-    marginTop: 40,
-    borderRadius: 16,
-    paddingVertical: 16,
-    alignItems: 'center',
-    elevation: 3,
-  },
-  saveButtonDisabled: {
-    opacity: 0.4,
-  },
-  saveButtonText: {
-    color: 'white',
-    fontWeight: '700',
-    fontSize: 16,
-  },
-});
+function createStyles(colors: Palette) {
+  return StyleSheet.create({
+    container: {
+      flex: 1,
+      padding: 20,
+      backgroundColor: colors.background,
+    },
+    label: {
+      fontSize: 13,
+      fontWeight: '700',
+      marginBottom: 10,
+      marginTop: 20,
+    },
+    input: {
+      backgroundColor: colors.surface,
+      borderRadius: 16,
+      paddingHorizontal: 16,
+      paddingVertical: 14,
+      fontSize: 16,
+      elevation: 1,
+      color: colors.text,
+    },
+    textArea: {
+      minHeight: 80,
+      textAlignVertical: 'top',
+    },
+    chipWrap: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: 8,
+    },
+    chip: {
+      paddingHorizontal: 14,
+      paddingVertical: 10,
+      borderRadius: 14,
+      backgroundColor: colors.surface,
+    },
+    chipText: {
+      fontWeight: '700',
+      fontSize: 13,
+    },
+    saveButton: {
+      marginTop: 40,
+      borderRadius: 16,
+      paddingVertical: 16,
+      alignItems: 'center',
+      elevation: 3,
+    },
+    saveButtonDisabled: {
+      opacity: 0.4,
+    },
+    saveButtonText: {
+      color: 'white',
+      fontWeight: '700',
+      fontSize: 16,
+    },
+  });
+}
 
 export default WorkoutFormScreen;
