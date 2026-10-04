@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import type { NativeStackNavigationProp, NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
-import { useTheme } from '../../app/ThemeContext';
+import { useTheme, type Palette } from '../../app/ThemeContext';
 import type { HabitsStackParamList } from './HabitsNavigator';
 import { type Frequency, createHabit, getHabit, updateHabit } from './habitsRepository';
 
@@ -21,7 +21,8 @@ function HabitFormScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<HabitsStackParamList>>();
   const route = useRoute<Props['route']>();
   const habitId = route.params?.habitId;
-  const { accent } = useTheme();
+  const { accent, colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
 
   const [name, setName] = useState('');
   const [frequency, setFrequency] = useState<Frequency>('daily');
@@ -69,6 +70,7 @@ function HabitFormScreen() {
         value={name}
         onChangeText={setName}
         placeholder="Ex: Beber água, Ler 10 páginas..."
+        placeholderTextColor={colors.textSecondary}
         autoFocus
       />
 
@@ -78,12 +80,14 @@ function HabitFormScreen() {
           label="Diário"
           selected={frequency === 'daily'}
           accent={accent}
+          styles={styles}
           onPress={() => setFrequency('daily')}
         />
         <FrequencyOption
           label="Semanal"
           selected={frequency === 'weekly'}
           accent={accent}
+          styles={styles}
           onPress={() => setFrequency('weekly')}
         />
       </View>
@@ -95,6 +99,7 @@ function HabitFormScreen() {
           value={hour}
           onChangeText={setHour}
           placeholder="HH"
+          placeholderTextColor={colors.textSecondary}
           keyboardType="number-pad"
           maxLength={2}
         />
@@ -104,6 +109,7 @@ function HabitFormScreen() {
           value={minute}
           onChangeText={setMinute}
           placeholder="MM"
+          placeholderTextColor={colors.textSecondary}
           keyboardType="number-pad"
           maxLength={2}
         />
@@ -123,11 +129,13 @@ function FrequencyOption({
   label,
   selected,
   accent,
+  styles,
   onPress,
 }: {
   label: string;
   selected: boolean;
   accent: string;
+  styles: ReturnType<typeof createStyles>;
   onPress: () => void;
 }) {
   return (
@@ -139,74 +147,79 @@ function FrequencyOption({
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: '#f7f7fb',
-  },
-  label: {
-    fontSize: 13,
-    fontWeight: '700',
-    marginBottom: 10,
-    marginTop: 20,
-  },
-  input: {
-    backgroundColor: 'white',
-    borderRadius: 16,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    fontSize: 16,
-    elevation: 1,
-  },
-  segmented: {
-    flexDirection: 'row',
-    gap: 10,
-  },
-  segmentedOption: {
-    flex: 1,
-    paddingVertical: 14,
-    borderRadius: 16,
-    backgroundColor: 'white',
-    alignItems: 'center',
-  },
-  segmentedOptionText: {
-    fontWeight: '700',
-  },
-  timeRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  timeInput: {
-    backgroundColor: 'white',
-    borderRadius: 16,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    fontSize: 16,
-    elevation: 1,
-    width: 70,
-    textAlign: 'center',
-  },
-  timeSeparator: {
-    fontSize: 18,
-    fontWeight: '700',
-  },
-  saveButton: {
-    marginTop: 40,
-    borderRadius: 16,
-    paddingVertical: 16,
-    alignItems: 'center',
-    elevation: 3,
-  },
-  saveButtonDisabled: {
-    opacity: 0.4,
-  },
-  saveButtonText: {
-    color: 'white',
-    fontWeight: '700',
-    fontSize: 16,
-  },
-});
+function createStyles(colors: Palette) {
+  return StyleSheet.create({
+    container: {
+      flex: 1,
+      padding: 20,
+      backgroundColor: colors.background,
+    },
+    label: {
+      fontSize: 13,
+      fontWeight: '700',
+      marginBottom: 10,
+      marginTop: 20,
+    },
+    input: {
+      backgroundColor: colors.surface,
+      borderRadius: 16,
+      paddingHorizontal: 16,
+      paddingVertical: 14,
+      fontSize: 16,
+      elevation: 1,
+      color: colors.text,
+    },
+    segmented: {
+      flexDirection: 'row',
+      gap: 10,
+    },
+    segmentedOption: {
+      flex: 1,
+      paddingVertical: 14,
+      borderRadius: 16,
+      backgroundColor: colors.surface,
+      alignItems: 'center',
+    },
+    segmentedOptionText: {
+      fontWeight: '700',
+    },
+    timeRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 8,
+    },
+    timeInput: {
+      backgroundColor: colors.surface,
+      borderRadius: 16,
+      paddingHorizontal: 16,
+      paddingVertical: 14,
+      fontSize: 16,
+      elevation: 1,
+      width: 70,
+      textAlign: 'center',
+      color: colors.text,
+    },
+    timeSeparator: {
+      fontSize: 18,
+      fontWeight: '700',
+      color: colors.text,
+    },
+    saveButton: {
+      marginTop: 40,
+      borderRadius: 16,
+      paddingVertical: 16,
+      alignItems: 'center',
+      elevation: 3,
+    },
+    saveButtonDisabled: {
+      opacity: 0.4,
+    },
+    saveButtonText: {
+      color: 'white',
+      fontWeight: '700',
+      fontSize: 16,
+    },
+  });
+}
 
 export default HabitFormScreen;

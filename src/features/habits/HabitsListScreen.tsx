@@ -1,8 +1,9 @@
+import { useMemo } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import HeroIcon from '../../app/HeroIcon';
-import { useTheme } from '../../app/ThemeContext';
+import { useTheme, type Palette } from '../../app/ThemeContext';
 import { useHabits } from './useHabits';
 import type { HabitsStackParamList } from './HabitsNavigator';
 import type { HabitWithTodayStatus } from './habitsRepository';
@@ -11,7 +12,8 @@ import type { HabitWithTodayStatus } from './habitsRepository';
 function HabitsListScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<HabitsStackParamList>>();
   const { habits, loading, toggle } = useHabits();
-  const { accent } = useTheme();
+  const { accent, colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
 
   return (
     <View style={styles.container}>
@@ -23,6 +25,7 @@ function HabitsListScreen() {
           <HabitRow
             item={item}
             accent={accent}
+            styles={styles}
             onToggle={() => toggle(item.id)}
             onOpen={() => navigation.navigate('HabitDetail', { habitId: item.id })}
           />
@@ -47,11 +50,13 @@ function HabitsListScreen() {
 function HabitRow({
   item,
   accent,
+  styles,
   onToggle,
   onOpen,
 }: {
   item: HabitWithTodayStatus;
   accent: string;
+  styles: ReturnType<typeof createStyles>;
   onToggle: () => void;
   onOpen: () => void;
 }) {
@@ -73,87 +78,87 @@ function HabitRow({
   );
 }
 
-const SUCCESS = '#10b981';
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f7f7fb',
-  },
-  listContent: {
-    paddingHorizontal: 16,
-    paddingTop: 16,
-    paddingBottom: 100,
-  },
-  emptyContainer: {
-    flexGrow: 1,
-  },
-  empty: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  emptyText: {
-    opacity: 0.6,
-  },
-  card: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'white',
-    borderRadius: 20,
-    paddingHorizontal: 18,
-    paddingVertical: 18,
-    marginBottom: 12,
-    elevation: 2,
-    shadowColor: '#4c1d95',
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 3 },
-  },
-  cardDone: {
-    backgroundColor: '#ecfdf5',
-  },
-  checkbox: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    borderWidth: 2,
-    borderColor: '#d1d5db',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 16,
-  },
-  checkboxDone: {
-    backgroundColor: SUCCESS,
-    borderColor: SUCCESS,
-  },
-  rowBody: {
-    flex: 1,
-  },
-  rowTitle: {
-    fontSize: 17,
-    fontWeight: '700',
-    color: '#1f2937',
-  },
-  rowSubtitle: {
-    fontSize: 13,
-    marginTop: 4,
-    fontWeight: '600',
-  },
-  fab: {
-    position: 'absolute',
-    right: 24,
-    bottom: 24,
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    alignItems: 'center',
-    justifyContent: 'center',
-    elevation: 6,
-    shadowOpacity: 0.4,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 4 },
-  },
-});
+function createStyles(colors: Palette) {
+  return StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    listContent: {
+      paddingHorizontal: 16,
+      paddingTop: 16,
+      paddingBottom: 100,
+    },
+    emptyContainer: {
+      flexGrow: 1,
+    },
+    empty: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    emptyText: {
+      color: colors.textSecondary,
+    },
+    card: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: colors.surface,
+      borderRadius: 20,
+      paddingHorizontal: 18,
+      paddingVertical: 18,
+      marginBottom: 12,
+      elevation: 2,
+      shadowColor: '#4c1d95',
+      shadowOpacity: 0.08,
+      shadowRadius: 8,
+      shadowOffset: { width: 0, height: 3 },
+    },
+    cardDone: {
+      backgroundColor: colors.successBg,
+    },
+    checkbox: {
+      width: 32,
+      height: 32,
+      borderRadius: 16,
+      borderWidth: 2,
+      borderColor: colors.border,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginRight: 16,
+    },
+    checkboxDone: {
+      backgroundColor: colors.success,
+      borderColor: colors.success,
+    },
+    rowBody: {
+      flex: 1,
+    },
+    rowTitle: {
+      fontSize: 17,
+      fontWeight: '700',
+      color: colors.text,
+    },
+    rowSubtitle: {
+      fontSize: 13,
+      marginTop: 4,
+      fontWeight: '600',
+    },
+    fab: {
+      position: 'absolute',
+      right: 24,
+      bottom: 24,
+      width: 60,
+      height: 60,
+      borderRadius: 30,
+      alignItems: 'center',
+      justifyContent: 'center',
+      elevation: 6,
+      shadowOpacity: 0.4,
+      shadowRadius: 10,
+      shadowOffset: { width: 0, height: 4 },
+    },
+  });
+}
 
 export default HabitsListScreen;
