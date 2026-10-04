@@ -6,6 +6,7 @@ import m0001 from './0001_slimy_iceman.sql';
 import m0002 from './0002_young_sister_grimm.sql';
 import m0003 from './0003_cloudy_dracula.sql';
 import m0004 from './0004_overjoyed_jamie_braddock.sql';
+import m0005 from './0005_dizzy_donald_blake.sql';
 
   export default {
     journal,
@@ -14,7 +15,8 @@ import m0004 from './0004_overjoyed_jamie_braddock.sql';
 m0001,
 m0002,
 m0003,
-m0004
+m0004,
+m0005
     }
   }
   

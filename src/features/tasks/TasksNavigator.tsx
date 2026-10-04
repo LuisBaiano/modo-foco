@@ -3,6 +3,7 @@ import type { NavigationProp } from '@react-navigation/native';
 import { Pressable, StyleSheet } from 'react-native';
 import HeroIcon from '../../app/HeroIcon';
 import ProfileHeaderButton from '../../app/ProfileHeaderButton';
+import { useTheme } from '../../app/ThemeContext';
 import type { RootStackParamList } from '../../app/RootNavigator';
 import TasksListScreen from './TasksListScreen';
 import TaskFormScreen from './TaskFormScreen';
@@ -19,9 +20,10 @@ export type TasksStackParamList = {
 const Stack = createNativeStackNavigator<TasksStackParamList>();
 
 function ProjectsHeaderButton({ navigation }: { navigation: NavigationProp<TasksStackParamList> }) {
+  const { colors } = useTheme();
   return (
     <Pressable onPress={() => navigation.navigate('ProjectsList')} hitSlop={8} style={styles.headerButton}>
-      <HeroIcon name="folder" size={20} color="#374151" />
+      <HeroIcon name="folder" size={20} color={colors.icon} />
     </Pressable>
   );
 }

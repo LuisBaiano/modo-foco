@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import type { NativeStackNavigationProp, NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
-import { useTheme } from '../../app/ThemeContext';
+import { useTheme, type Palette } from '../../app/ThemeContext';
 import type { TasksStackParamList } from './TasksNavigator';
 import { type Priority, createTask, getTask, updateTask } from './tasksRepository';
 import { listProjects } from './projectsRepository';
@@ -32,7 +32,8 @@ function TaskFormScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<TasksStackParamList>>();
   const route = useRoute<Props['route']>();
   const taskId = route.params?.taskId;
-  const { accent } = useTheme();
+  const { accent, colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
 
   const [title, setTitle] = useState('');
   const [priority, setPriority] = useState<Priority>('medium');
@@ -86,22 +87,25 @@ function TaskFormScreen() {
         value={title}
         onChangeText={setTitle}
         placeholder="Ex: Enviar relatório, Comprar ingredientes..."
+        placeholderTextColor={colors.textSecondary}
         autoFocus
       />
 
       <Text style={[styles.label, { color: accent }]}>Prioridade</Text>
       <View style={styles.segmented}>
-        <ChoiceChip label="Baixa" selected={priority === 'low'} accent={accent} onPress={() => setPriority('low')} />
+        <ChoiceChip label="Baixa" selected={priority === 'low'} accent={accent} styles={styles} onPress={() => setPriority('low')} />
         <ChoiceChip
           label="Média"
           selected={priority === 'medium'}
           accent={accent}
+          styles={styles}
           onPress={() => setPriority('medium')}
         />
         <ChoiceChip
           label="Alta"
           selected={priority === 'high'}
           accent={accent}
+          styles={styles}
           onPress={() => setPriority('high')}
         />
       </View>
@@ -112,18 +116,21 @@ function TaskFormScreen() {
           label="Sem prazo"
           selected={dueOption === 'none'}
           accent={accent}
+          styles={styles}
           onPress={() => setDueOption('none')}
         />
         <ChoiceChip
           label="Hoje"
           selected={dueOption === 'today'}
           accent={accent}
+          styles={styles}
           onPress={() => setDueOption('today')}
         />
         <ChoiceChip
           label="Amanhã"
           selected={dueOption === 'tomorrow'}
           accent={accent}
+          styles={styles}
           onPress={() => setDueOption('tomorrow')}
         />
       </View>
@@ -132,13 +139,20 @@ function TaskFormScreen() {
         <>
           <Text style={[styles.label, { color: accent }]}>Projeto</Text>
           <View style={styles.chipWrap}>
-            <ChoiceChip label="Nenhum" selected={projectId == null} accent={accent} onPress={() => setProjectId(null)} />
+            <ChoiceChip
+              label="Nenhum"
+              selected={projectId == null}
+              accent={accent}
+              styles={styles}
+              onPress={() => setProjectId(null)}
+            />
             {projects.map(project => (
               <ChoiceChip
                 key={project.id}
                 label={project.name}
                 selected={projectId === project.id}
                 accent={project.color}
+                styles={styles}
                 onPress={() => setProjectId(project.id)}
               />
             ))}
@@ -160,11 +174,13 @@ function ChoiceChip({
   label,
   selected,
   accent,
+  styles,
   onPress,
 }: {
   label: string;
   selected: boolean;
   accent: string;
+  styles: ReturnType<typeof createStyles>;
   onPress: () => void;
 }) {
   return (
@@ -174,63 +190,66 @@ function ChoiceChip({
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f7f7fb',
-  },
-  content: {
-    padding: 20,
-    paddingBottom: 40,
-  },
-  label: {
-    fontSize: 13,
-    fontWeight: '700',
-    marginBottom: 10,
-    marginTop: 20,
-  },
-  input: {
-    backgroundColor: 'white',
-    borderRadius: 16,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    fontSize: 16,
-    elevation: 1,
-  },
-  segmented: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  chipWrap: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-  },
-  chip: {
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    borderRadius: 14,
-    backgroundColor: 'white',
-  },
-  chipText: {
-    fontWeight: '700',
-    fontSize: 13,
-  },
-  saveButton: {
-    marginTop: 40,
-    borderRadius: 16,
-    paddingVertical: 16,
-    alignItems: 'center',
-    elevation: 3,
-  },
-  saveButtonDisabled: {
-    opacity: 0.4,
-  },
-  saveButtonText: {
-    color: 'white',
-    fontWeight: '700',
-    fontSize: 16,
-  },
-});
+function createStyles(colors: Palette) {
+  return StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    content: {
+      padding: 20,
+      paddingBottom: 40,
+    },
+    label: {
+      fontSize: 13,
+      fontWeight: '700',
+      marginBottom: 10,
+      marginTop: 20,
+    },
+    input: {
+      backgroundColor: colors.surface,
+      borderRadius: 16,
+      paddingHorizontal: 16,
+      paddingVertical: 14,
+      fontSize: 16,
+      elevation: 1,
+      color: colors.text,
+    },
+    segmented: {
+      flexDirection: 'row',
+      gap: 8,
+    },
+    chipWrap: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: 8,
+    },
+    chip: {
+      paddingHorizontal: 14,
+      paddingVertical: 10,
+      borderRadius: 14,
+      backgroundColor: colors.surface,
+    },
+    chipText: {
+      fontWeight: '700',
+      fontSize: 13,
+    },
+    saveButton: {
+      marginTop: 40,
+      borderRadius: 16,
+      paddingVertical: 16,
+      alignItems: 'center',
+      elevation: 3,
+    },
+    saveButtonDisabled: {
+      opacity: 0.4,
+    },
+    saveButtonText: {
+      color: 'white',
+      fontWeight: '700',
+      fontSize: 16,
+    },
+  });
+}
 
 export default TaskFormScreen;

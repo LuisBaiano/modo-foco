@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import type { NativeStackNavigationProp, NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Alert, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import HeroIcon from '../../app/HeroIcon';
-import { useTheme } from '../../app/ThemeContext';
+import { useTheme, type Palette } from '../../app/ThemeContext';
 import type { TasksStackParamList } from './TasksNavigator';
 import { createProject, deleteProject, getProject, updateProject } from './projectsRepository';
 
@@ -25,7 +25,8 @@ function ProjectFormScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<TasksStackParamList>>();
   const route = useRoute<Props['route']>();
   const projectId = route.params?.projectId;
-  const { accent } = useTheme();
+  const { accent, colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
 
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -81,6 +82,7 @@ function ProjectFormScreen() {
         value={name}
         onChangeText={setName}
         placeholder="Ex: Reforma da casa, TCC..."
+        placeholderTextColor={colors.textSecondary}
         autoFocus
       />
 
@@ -102,6 +104,7 @@ function ProjectFormScreen() {
         value={description}
         onChangeText={setDescription}
         placeholder="Do que se trata esse projeto..."
+        placeholderTextColor={colors.textSecondary}
         multiline
       />
 
@@ -121,72 +124,75 @@ function ProjectFormScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: '#f7f7fb',
-  },
-  label: {
-    fontSize: 13,
-    fontWeight: '700',
-    marginBottom: 10,
-    marginTop: 20,
-  },
-  input: {
-    backgroundColor: 'white',
-    borderRadius: 16,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    fontSize: 16,
-    elevation: 1,
-  },
-  textArea: {
-    minHeight: 80,
-    textAlignVertical: 'top',
-  },
-  swatchRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 12,
-  },
-  swatch: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  swatchSelected: {
-    borderWidth: 3,
-    borderColor: '#00000055',
-  },
-  saveButton: {
-    marginTop: 40,
-    borderRadius: 16,
-    paddingVertical: 16,
-    alignItems: 'center',
-    elevation: 3,
-  },
-  saveButtonDisabled: {
-    opacity: 0.4,
-  },
-  saveButtonText: {
-    color: 'white',
-    fontWeight: '700',
-    fontSize: 16,
-  },
-  deleteButton: {
-    marginTop: 16,
-    borderRadius: 16,
-    paddingVertical: 14,
-    alignItems: 'center',
-    backgroundColor: '#fef2f2',
-  },
-  deleteButtonText: {
-    color: '#dc2626',
-    fontWeight: '700',
-  },
-});
+function createStyles(colors: Palette) {
+  return StyleSheet.create({
+    container: {
+      flex: 1,
+      padding: 20,
+      backgroundColor: colors.background,
+    },
+    label: {
+      fontSize: 13,
+      fontWeight: '700',
+      marginBottom: 10,
+      marginTop: 20,
+    },
+    input: {
+      backgroundColor: colors.surface,
+      borderRadius: 16,
+      paddingHorizontal: 16,
+      paddingVertical: 14,
+      fontSize: 16,
+      elevation: 1,
+      color: colors.text,
+    },
+    textArea: {
+      minHeight: 80,
+      textAlignVertical: 'top',
+    },
+    swatchRow: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: 12,
+    },
+    swatch: {
+      width: 36,
+      height: 36,
+      borderRadius: 18,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    swatchSelected: {
+      borderWidth: 3,
+      borderColor: '#00000055',
+    },
+    saveButton: {
+      marginTop: 40,
+      borderRadius: 16,
+      paddingVertical: 16,
+      alignItems: 'center',
+      elevation: 3,
+    },
+    saveButtonDisabled: {
+      opacity: 0.4,
+    },
+    saveButtonText: {
+      color: 'white',
+      fontWeight: '700',
+      fontSize: 16,
+    },
+    deleteButton: {
+      marginTop: 16,
+      borderRadius: 16,
+      paddingVertical: 14,
+      alignItems: 'center',
+      backgroundColor: colors.dangerBg,
+    },
+    deleteButtonText: {
+      color: colors.danger,
+      fontWeight: '700',
+    },
+  });
+}
 
 export default ProjectFormScreen;

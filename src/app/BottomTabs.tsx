@@ -7,6 +7,7 @@ import TasksNavigator from '../features/tasks/TasksNavigator';
 import HealthNavigator from '../features/health/HealthNavigator';
 import HeroIcon, { type IconName } from './HeroIcon';
 import ProfileHeaderButton from './ProfileHeaderButton';
+import { useTheme } from './ThemeContext';
 import type { RootStackParamList } from './RootNavigator';
 
 export type BottomTabParamList = {
@@ -29,12 +30,16 @@ const TAB_ICON_NAMES: Record<keyof BottomTabParamList, IconName> = {
 
 /** Navegação de abas do app. Abas com fluxo próprio (Hábitos, Tarefas) usam um stack aninhado. */
 function BottomTabs() {
+  const { accent, colors } = useTheme();
+
   return (
     <Tab.Navigator
       screenOptions={({ navigation, route }) => ({
         headerRight: () => (
           <ProfileHeaderButton navigation={navigation.getParent() as NavigationProp<RootStackParamList>} />
         ),
+        tabBarActiveTintColor: accent,
+        tabBarInactiveTintColor: colors.text,
         tabBarIcon: ({ color }) => (
           <HeroIcon name={TAB_ICON_NAMES[route.name as keyof BottomTabParamList]} size={22} color={color} />
         ),

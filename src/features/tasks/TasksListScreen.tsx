@@ -1,8 +1,9 @@
+import { useMemo } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import HeroIcon from '../../app/HeroIcon';
-import { useTheme } from '../../app/ThemeContext';
+import { useTheme, type Palette } from '../../app/ThemeContext';
 import { useTasks } from './useTasks';
 import type { TasksStackParamList } from './TasksNavigator';
 import type { Priority, TaskWithProject } from './tasksRepository';
@@ -52,7 +53,8 @@ function formatDueDate(dueDate: string | null): { label: string; overdue: boolea
 function TasksListScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<TasksStackParamList>>();
   const { tasks, loading, toggle } = useTasks();
-  const { accent } = useTheme();
+  const { accent, colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
 
   return (
     <View style={styles.container}>
@@ -63,6 +65,8 @@ function TasksListScreen() {
         renderItem={({ item }) => (
           <TaskRow
             item={item}
+            styles={styles}
+            colors={colors}
             onToggle={() => toggle(item.id)}
             onOpen={() => navigation.navigate('TaskForm', { taskId: item.id })}
           />
@@ -84,7 +88,19 @@ function TasksListScreen() {
   );
 }
 
-function TaskRow({ item, onToggle, onOpen }: { item: TaskWithProject; onToggle: () => void; onOpen: () => void }) {
+function TaskRow({
+  item,
+  styles,
+  colors,
+  onToggle,
+  onOpen,
+}: {
+  item: TaskWithProject;
+  styles: ReturnType<typeof createStyles>;
+  colors: Palette;
+  onToggle: () => void;
+  onOpen: () => void;
+}) {
   const due = formatDueDate(item.dueDate);
   return (
     <View style={[styles.card, item.completed && styles.cardDone]}>
@@ -100,8 +116,10 @@ function TaskRow({ item, onToggle, onOpen }: { item: TaskWithProject; onToggle: 
             </Text>
           </View>
           {item.projectName && (
-            <View style={[styles.badge, { backgroundColor: (item.projectColor ?? '#999') + '22' }]}>
-              <Text style={[styles.badgeText, { color: item.projectColor ?? '#666' }]}>{item.projectName}</Text>
+            <View style={[styles.badge, { backgroundColor: (item.projectColor ?? colors.textMuted) + '22' }]}>
+              <Text style={[styles.badgeText, { color: item.projectColor ?? colors.textSecondary }]}>
+                {item.projectName}
+              </Text>
             </View>
           )}
           {due && (
@@ -115,108 +133,110 @@ function TaskRow({ item, onToggle, onOpen }: { item: TaskWithProject; onToggle: 
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f7f7fb',
-  },
-  listContent: {
-    paddingHorizontal: 16,
-    paddingTop: 16,
-    paddingBottom: 100,
-  },
-  emptyContainer: {
-    flexGrow: 1,
-  },
-  empty: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  emptyText: {
-    opacity: 0.6,
-  },
-  card: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    backgroundColor: 'white',
-    borderRadius: 20,
-    paddingHorizontal: 18,
-    paddingVertical: 16,
-    marginBottom: 12,
-    elevation: 2,
-    shadowColor: '#4c1d95',
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 3 },
-  },
-  cardDone: {
-    backgroundColor: '#ecfdf5',
-  },
-  checkbox: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    borderWidth: 2,
-    borderColor: '#d1d5db',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 14,
-    marginTop: 2,
-  },
-  checkboxDone: {
-    backgroundColor: '#10b981',
-    borderColor: '#10b981',
-  },
-  rowBody: {
-    flex: 1,
-  },
-  rowTitle: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#1f2937',
-  },
-  rowTitleDone: {
-    textDecorationLine: 'line-through',
-    opacity: 0.5,
-  },
-  badgeRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 6,
-    marginTop: 8,
-  },
-  badge: {
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 8,
-    backgroundColor: '#f3f4f6',
-  },
-  badgeText: {
-    fontSize: 11,
-    fontWeight: '700',
-    color: '#4b5563',
-  },
-  badgeOverdue: {
-    backgroundColor: '#fef2f2',
-  },
-  badgeOverdueText: {
-    color: '#dc2626',
-  },
-  fab: {
-    position: 'absolute',
-    right: 24,
-    bottom: 24,
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    alignItems: 'center',
-    justifyContent: 'center',
-    elevation: 6,
-    shadowOpacity: 0.4,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 4 },
-  },
-});
+function createStyles(colors: Palette) {
+  return StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    listContent: {
+      paddingHorizontal: 16,
+      paddingTop: 16,
+      paddingBottom: 100,
+    },
+    emptyContainer: {
+      flexGrow: 1,
+    },
+    empty: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    emptyText: {
+      color: colors.textSecondary,
+    },
+    card: {
+      flexDirection: 'row',
+      alignItems: 'flex-start',
+      backgroundColor: colors.surface,
+      borderRadius: 20,
+      paddingHorizontal: 18,
+      paddingVertical: 16,
+      marginBottom: 12,
+      elevation: 2,
+      shadowColor: '#4c1d95',
+      shadowOpacity: 0.08,
+      shadowRadius: 8,
+      shadowOffset: { width: 0, height: 3 },
+    },
+    cardDone: {
+      backgroundColor: colors.successBg,
+    },
+    checkbox: {
+      width: 28,
+      height: 28,
+      borderRadius: 14,
+      borderWidth: 2,
+      borderColor: colors.border,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginRight: 14,
+      marginTop: 2,
+    },
+    checkboxDone: {
+      backgroundColor: colors.success,
+      borderColor: colors.success,
+    },
+    rowBody: {
+      flex: 1,
+    },
+    rowTitle: {
+      fontSize: 16,
+      fontWeight: '700',
+      color: colors.text,
+    },
+    rowTitleDone: {
+      textDecorationLine: 'line-through',
+      opacity: 0.5,
+    },
+    badgeRow: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: 6,
+      marginTop: 8,
+    },
+    badge: {
+      paddingHorizontal: 8,
+      paddingVertical: 3,
+      borderRadius: 8,
+      backgroundColor: colors.surfaceAlt,
+    },
+    badgeText: {
+      fontSize: 11,
+      fontWeight: '700',
+      color: colors.textSecondary,
+    },
+    badgeOverdue: {
+      backgroundColor: colors.dangerBg,
+    },
+    badgeOverdueText: {
+      color: colors.danger,
+    },
+    fab: {
+      position: 'absolute',
+      right: 24,
+      bottom: 24,
+      width: 60,
+      height: 60,
+      borderRadius: 30,
+      alignItems: 'center',
+      justifyContent: 'center',
+      elevation: 6,
+      shadowOpacity: 0.4,
+      shadowRadius: 10,
+      shadowOffset: { width: 0, height: 4 },
+    },
+  });
+}
 
 export default TasksListScreen;

@@ -1,8 +1,9 @@
+import { useMemo } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import HeroIcon from '../../app/HeroIcon';
-import { useTheme } from '../../app/ThemeContext';
+import { useTheme, type Palette } from '../../app/ThemeContext';
 import { useProjects } from './useProjects';
 import type { TasksStackParamList } from './TasksNavigator';
 import type { ProjectWithProgress } from './projectsRepository';
@@ -11,7 +12,8 @@ import type { ProjectWithProgress } from './projectsRepository';
 function ProjectsListScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<TasksStackParamList>>();
   const { projects, loading } = useProjects();
-  const { accent } = useTheme();
+  const { accent, colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
 
   return (
     <View style={styles.container}>
@@ -20,7 +22,11 @@ function ProjectsListScreen() {
         keyExtractor={item => String(item.id)}
         contentContainerStyle={[styles.listContent, projects.length === 0 && styles.emptyContainer]}
         renderItem={({ item }) => (
-          <ProjectCard item={item} onOpen={() => navigation.navigate('ProjectForm', { projectId: item.id })} />
+          <ProjectCard
+            item={item}
+            styles={styles}
+            onOpen={() => navigation.navigate('ProjectForm', { projectId: item.id })}
+          />
         )}
         ListEmptyComponent={
           !loading ? (
@@ -39,7 +45,15 @@ function ProjectsListScreen() {
   );
 }
 
-function ProjectCard({ item, onOpen }: { item: ProjectWithProgress; onOpen: () => void }) {
+function ProjectCard({
+  item,
+  styles,
+  onOpen,
+}: {
+  item: ProjectWithProgress;
+  styles: ReturnType<typeof createStyles>;
+  onOpen: () => void;
+}) {
   const progress = item.totalTasks === 0 ? 0 : item.completedTasks / item.totalTasks;
   return (
     <Pressable style={styles.card} onPress={onOpen}>
@@ -58,89 +72,91 @@ function ProjectCard({ item, onOpen }: { item: ProjectWithProgress; onOpen: () =
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f7f7fb',
-  },
-  listContent: {
-    paddingHorizontal: 16,
-    paddingTop: 16,
-    paddingBottom: 100,
-  },
-  emptyContainer: {
-    flexGrow: 1,
-  },
-  empty: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  emptyText: {
-    opacity: 0.6,
-  },
-  card: {
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 18,
-    marginBottom: 12,
-    elevation: 2,
-    shadowColor: '#4c1d95',
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 3 },
-  },
-  cardHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  colorDot: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-    marginRight: 10,
-  },
-  cardTitle: {
-    fontSize: 17,
-    fontWeight: '700',
-    color: '#1f2937',
-  },
-  cardDescription: {
-    fontSize: 13,
-    color: '#6b7280',
-    marginTop: 6,
-  },
-  progressTrack: {
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#f3f4f6',
-    marginTop: 14,
-    overflow: 'hidden',
-  },
-  progressFill: {
-    height: '100%',
-    borderRadius: 4,
-  },
-  progressText: {
-    fontSize: 12,
-    color: '#6b7280',
-    marginTop: 8,
-    fontWeight: '600',
-  },
-  fab: {
-    position: 'absolute',
-    right: 24,
-    bottom: 24,
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    alignItems: 'center',
-    justifyContent: 'center',
-    elevation: 6,
-    shadowOpacity: 0.4,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 4 },
-  },
-});
+function createStyles(colors: Palette) {
+  return StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    listContent: {
+      paddingHorizontal: 16,
+      paddingTop: 16,
+      paddingBottom: 100,
+    },
+    emptyContainer: {
+      flexGrow: 1,
+    },
+    empty: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    emptyText: {
+      color: colors.textSecondary,
+    },
+    card: {
+      backgroundColor: colors.surface,
+      borderRadius: 20,
+      padding: 18,
+      marginBottom: 12,
+      elevation: 2,
+      shadowColor: '#4c1d95',
+      shadowOpacity: 0.08,
+      shadowRadius: 8,
+      shadowOffset: { width: 0, height: 3 },
+    },
+    cardHeader: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    colorDot: {
+      width: 12,
+      height: 12,
+      borderRadius: 6,
+      marginRight: 10,
+    },
+    cardTitle: {
+      fontSize: 17,
+      fontWeight: '700',
+      color: colors.text,
+    },
+    cardDescription: {
+      fontSize: 13,
+      color: colors.textSecondary,
+      marginTop: 6,
+    },
+    progressTrack: {
+      height: 8,
+      borderRadius: 4,
+      backgroundColor: colors.surfaceAlt,
+      marginTop: 14,
+      overflow: 'hidden',
+    },
+    progressFill: {
+      height: '100%',
+      borderRadius: 4,
+    },
+    progressText: {
+      fontSize: 12,
+      color: colors.textSecondary,
+      marginTop: 8,
+      fontWeight: '600',
+    },
+    fab: {
+      position: 'absolute',
+      right: 24,
+      bottom: 24,
+      width: 60,
+      height: 60,
+      borderRadius: 30,
+      alignItems: 'center',
+      justifyContent: 'center',
+      elevation: 6,
+      shadowOpacity: 0.4,
+      shadowRadius: 10,
+      shadowOffset: { width: 0, height: 4 },
+    },
+  });
+}
 
 export default ProjectsListScreen;

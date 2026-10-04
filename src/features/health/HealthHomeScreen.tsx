@@ -1,8 +1,9 @@
+import { useMemo } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import HeroIcon from '../../app/HeroIcon';
-import { useTheme } from '../../app/ThemeContext';
+import { useTheme, type Palette } from '../../app/ThemeContext';
 import { useHealth } from './useHealth';
 import type { HealthStackParamList } from './HealthNavigator';
 import type { MealType, WorkoutType } from './healthRepository';
@@ -34,7 +35,8 @@ function formatDate(date: string): string {
 /** Tela principal da aba Saúde: água, humor, resumo semanal e atalhos de registro. */
 function HealthHomeScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<HealthStackParamList>>();
-  const { accent } = useTheme();
+  const { accent, colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const { loading, waterGlasses, mood, weekSummary, recentWorkouts, recentMeals, addWater, selectMood } =
     useHealth();
 
@@ -130,124 +132,126 @@ function HealthHomeScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f7f7fb',
-  },
-  content: {
-    padding: 20,
-    paddingBottom: 40,
-  },
-  label: {
-    fontSize: 13,
-    fontWeight: '700',
-    marginBottom: 10,
-  },
-  recentLabel: {
-    marginTop: 32,
-  },
-  waterCard: {
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 20,
-    elevation: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  waterCount: {
-    fontSize: 28,
-    fontWeight: '800',
-    color: '#1f2937',
-  },
-  waterGoal: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#6b7280',
-  },
-  waterButton: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
-    elevation: 3,
-  },
-  moodRow: {
-    flexDirection: 'row',
-    gap: 12,
-    marginTop: 4,
-  },
-  moodOption: {
-    width: 52,
-    height: 52,
-    borderRadius: 26,
-    backgroundColor: 'white',
-    alignItems: 'center',
-    justifyContent: 'center',
-    elevation: 1,
-  },
-  moodEmoji: {
-    fontSize: 24,
-  },
-  summaryCard: {
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 20,
-    elevation: 1,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 16,
-  },
-  summaryRow: {
-    width: '45%',
-  },
-  summaryValue: {
-    fontSize: 22,
-    fontWeight: '800',
-    color: '#1f2937',
-  },
-  summaryCaption: {
-    fontSize: 12,
-    color: '#6b7280',
-    marginTop: 2,
-  },
-  actionsRow: {
-    flexDirection: 'row',
-    gap: 10,
-    marginTop: 24,
-  },
-  actionButton: {
-    flex: 1,
-    borderRadius: 16,
-    paddingVertical: 14,
-    alignItems: 'center',
-    elevation: 3,
-  },
-  actionButtonText: {
-    color: 'white',
-    fontWeight: '700',
-    fontSize: 13,
-  },
-  recentRow: {
-    backgroundColor: 'white',
-    borderRadius: 16,
-    padding: 16,
-    marginBottom: 10,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    elevation: 1,
-  },
-  recentTitle: {
-    fontWeight: '700',
-    color: '#1f2937',
-  },
-  recentMeta: {
-    fontSize: 12,
-    color: '#6b7280',
-  },
-});
+function createStyles(colors: Palette) {
+  return StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    content: {
+      padding: 20,
+      paddingBottom: 40,
+    },
+    label: {
+      fontSize: 13,
+      fontWeight: '700',
+      marginBottom: 10,
+    },
+    recentLabel: {
+      marginTop: 32,
+    },
+    waterCard: {
+      backgroundColor: colors.surface,
+      borderRadius: 20,
+      padding: 20,
+      elevation: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    },
+    waterCount: {
+      fontSize: 28,
+      fontWeight: '800',
+      color: colors.text,
+    },
+    waterGoal: {
+      fontSize: 14,
+      fontWeight: '600',
+      color: colors.textSecondary,
+    },
+    waterButton: {
+      width: 48,
+      height: 48,
+      borderRadius: 24,
+      alignItems: 'center',
+      justifyContent: 'center',
+      elevation: 3,
+    },
+    moodRow: {
+      flexDirection: 'row',
+      gap: 12,
+      marginTop: 4,
+    },
+    moodOption: {
+      width: 52,
+      height: 52,
+      borderRadius: 26,
+      backgroundColor: colors.surface,
+      alignItems: 'center',
+      justifyContent: 'center',
+      elevation: 1,
+    },
+    moodEmoji: {
+      fontSize: 24,
+    },
+    summaryCard: {
+      backgroundColor: colors.surface,
+      borderRadius: 20,
+      padding: 20,
+      elevation: 1,
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: 16,
+    },
+    summaryRow: {
+      width: '45%',
+    },
+    summaryValue: {
+      fontSize: 22,
+      fontWeight: '800',
+      color: colors.text,
+    },
+    summaryCaption: {
+      fontSize: 12,
+      color: colors.textSecondary,
+      marginTop: 2,
+    },
+    actionsRow: {
+      flexDirection: 'row',
+      gap: 10,
+      marginTop: 24,
+    },
+    actionButton: {
+      flex: 1,
+      borderRadius: 16,
+      paddingVertical: 14,
+      alignItems: 'center',
+      elevation: 3,
+    },
+    actionButtonText: {
+      color: 'white',
+      fontWeight: '700',
+      fontSize: 13,
+    },
+    recentRow: {
+      backgroundColor: colors.surface,
+      borderRadius: 16,
+      padding: 16,
+      marginBottom: 10,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      elevation: 1,
+    },
+    recentTitle: {
+      fontWeight: '700',
+      color: colors.text,
+    },
+    recentMeta: {
+      fontSize: 12,
+      color: colors.textSecondary,
+    },
+  });
+}
 
 export default HealthHomeScreen;
