@@ -129,4 +129,6 @@ export const userXp = sqliteTable('user_xp', {
 export const appSettings = sqliteTable('app_settings', {
   id: integer('id').primaryKey(),
   accentColor: text('accent_color').notNull(),
+  /** 'light' | 'dark' | 'system'. Null = nunca configurado, cai no padrão 'system'. */
+  colorScheme: text('color_scheme'),
 });
