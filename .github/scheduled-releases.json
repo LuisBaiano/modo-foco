@@ -1,12 +1,5 @@
 [
   {
-    "branch": "release/v0.9.0",
-    "tag": "v0.9.0",
-    "title": "v0.9.0 — Tema escuro",
-    "notes": "O tema escuro agora está disponível em todo o app. No perfil, você pode escolher entre claro, escuro ou seguir automaticamente o tema do celular. Também ajustei as cores dos ícones e das telas para manter a leitura boa no modo escuro.",
-    "publishAt": "2026-10-04T19:50:00Z"
-  },
-  {
     "branch": "release/v0.10.0",
     "tag": "v0.10.0",
     "title": "v0.10.0 — Água configurável",
