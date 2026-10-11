@@ -10,6 +10,13 @@ import {
   getWeekSummary,
   setTodayMood,
 } from './healthRepository';
+import {
+  getWaterGlassMl,
+  getWaterReminderIntervalHours,
+  setWaterGlassMl,
+  setWaterReminderIntervalHours,
+} from '../settings/settingsRepository';
+import { scheduleWaterReminders } from '../notifications/waterReminders';
 import type { mealLogs, workoutLogs } from '../../db/schema';
 import { emitCelebration } from '../gamification/celebrationBus';
 
@@ -20,6 +27,8 @@ type MealLog = typeof mealLogs.$inferSelect;
 export function useHealth() {
   const [loading, setLoading] = useState(true);
   const [waterGlasses, setWaterGlasses] = useState(0);
+  const [waterGlassMl, setWaterGlassMlState] = useState(250);
+  const [waterReminderIntervalHours, setWaterReminderIntervalHoursState] = useState(3);
   const [mood, setMood] = useState<number | null>(null);
   const [weekSummary, setWeekSummary] = useState<WeekSummary>({
     workoutMinutes: 0,
@@ -33,14 +42,18 @@ export function useHealth() {
   const refresh = useCallback(async () => {
     setLoading(true);
     try {
-      const [water, todayMood, summary, workouts, meals] = await Promise.all([
+      const [water, glassMl, intervalHours, todayMood, summary, workouts, meals] = await Promise.all([
         getTodayWaterGlasses(),
+        getWaterGlassMl(),
+        getWaterReminderIntervalHours(),
         getTodayMood(),
         getWeekSummary(),
         getRecentWorkouts(),
         getRecentMeals(),
       ]);
       setWaterGlasses(water);
+      setWaterGlassMlState(glassMl);
+      setWaterReminderIntervalHoursState(intervalHours);
       setMood(todayMood);
       setWeekSummary(summary);
       setRecentWorkouts(workouts);
@@ -70,5 +83,36 @@ export function useHealth() {
     [refresh],
   );
 
-  return { loading, waterGlasses, mood, weekSummary, recentWorkouts, recentMeals, refresh, addWater, selectMood };
+  const updateWaterGlassMl = useCallback(
+    async (ml: number) => {
+      await setWaterGlassMl(ml);
+      await refresh();
+    },
+    [refresh],
+  );
+
+  const updateWaterReminderIntervalHours = useCallback(
+    async (hours: number) => {
+      await setWaterReminderIntervalHours(hours);
+      await scheduleWaterReminders();
+      await refresh();
+    },
+    [refresh],
+  );
+
+  return {
+    loading,
+    waterGlasses,
+    waterGlassMl,
+    waterReminderIntervalHours,
+    mood,
+    weekSummary,
+    recentWorkouts,
+    recentMeals,
+    refresh,
+    addWater,
+    selectMood,
+    updateWaterGlassMl,
+    updateWaterReminderIntervalHours,
+  };
 }

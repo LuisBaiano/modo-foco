@@ -1,7 +1,7 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import HeroIcon from '../../app/HeroIcon';
 import { useTheme, type Palette } from '../../app/ThemeContext';
 import { useHealth } from './useHealth';
@@ -37,23 +37,95 @@ function HealthHomeScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<HealthStackParamList>>();
   const { accent, colors } = useTheme();
   const styles = useMemo(() => createStyles(colors), [colors]);
-  const { loading, waterGlasses, mood, weekSummary, recentWorkouts, recentMeals, addWater, selectMood } =
-    useHealth();
+  const {
+    loading,
+    waterGlasses,
+    waterGlassMl,
+    waterReminderIntervalHours,
+    mood,
+    weekSummary,
+    recentWorkouts,
+    recentMeals,
+    addWater,
+    selectMood,
+    updateWaterGlassMl,
+    updateWaterReminderIntervalHours,
+  } = useHealth();
+
+  const [editingWaterSettings, setEditingWaterSettings] = useState(false);
+  const [glassMlInput, setGlassMlInput] = useState('');
+  const [intervalInput, setIntervalInput] = useState('');
+
+  const openWaterSettings = () => {
+    setGlassMlInput(String(waterGlassMl));
+    setIntervalInput(String(waterReminderIntervalHours));
+    setEditingWaterSettings(true);
+  };
+
+  const saveWaterSettings = async () => {
+    const ml = parseInt(glassMlInput, 10);
+    const hours = parseInt(intervalInput, 10);
+    if (!Number.isNaN(ml) && ml > 0) {
+      await updateWaterGlassMl(ml);
+    }
+    if (!Number.isNaN(hours) && hours > 0) {
+      await updateWaterReminderIntervalHours(hours);
+    }
+    setEditingWaterSettings(false);
+  };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.content}
+      keyboardShouldPersistTaps="handled">
       <Text style={[styles.label, { color: accent }]}>Água hoje</Text>
       <View style={styles.waterCard}>
-        <Text style={styles.waterCount}>
-          {waterGlasses}
-          <Text style={styles.waterGoal}> / {WATER_GOAL_GLASSES} copos</Text>
-        </Text>
+        <View>
+          <Text style={styles.waterCount}>
+            {waterGlasses}
+            <Text style={styles.waterGoal}> / {WATER_GOAL_GLASSES} copos</Text>
+          </Text>
+          <Text style={styles.waterMl}>{waterGlasses * waterGlassMl}ml hoje</Text>
+        </View>
         <Pressable style={[styles.waterButton, { backgroundColor: accent }]} onPress={addWater}>
           <HeroIcon name="plus" size={22} color="white" />
         </Pressable>
       </View>
 
-      <Text style={[styles.label, { color: accent }]}>Como você está hoje?</Text>
+      <Pressable onPress={editingWaterSettings ? () => setEditingWaterSettings(false) : openWaterSettings}>
+        <Text style={[styles.waterSettingsLink, { color: accent }]}>
+          Copo de {waterGlassMl}ml · lembrete a cada {waterReminderIntervalHours}h — editar
+        </Text>
+      </Pressable>
+
+      {editingWaterSettings && (
+        <View style={styles.waterSettingsPanel}>
+          <Text style={styles.waterSettingsLabel}>Tamanho do copo (ml)</Text>
+          <TextInput
+            style={styles.waterSettingsInput}
+            value={glassMlInput}
+            onChangeText={setGlassMlInput}
+            placeholder="Ex: 250"
+            placeholderTextColor={colors.textSecondary}
+            keyboardType="number-pad"
+          />
+          <Text style={styles.waterSettingsLabel}>Lembrete a cada quantas horas</Text>
+          <TextInput
+            style={styles.waterSettingsInput}
+            value={intervalInput}
+            onChangeText={setIntervalInput}
+            placeholder="Ex: 3"
+            placeholderTextColor={colors.textSecondary}
+            keyboardType="number-pad"
+          />
+          <Pressable style={[styles.waterSettingsSave, { backgroundColor: accent }]} onPress={saveWaterSettings}>
+            <Text style={styles.waterSettingsSaveText}>Salvar</Text>
+          </Pressable>
+        </View>
+      )}
+
+      <Text style={[styles.label, styles.recentLabel, { color: accent }]}>Como você está hoje?</Text>
       <View style={styles.moodRow}>
         {MOOD_EMOJIS.map((emoji, index) => {
           const level = index + 1;
@@ -68,7 +140,7 @@ function HealthHomeScreen() {
         })}
       </View>
 
-      <Text style={[styles.label, { color: accent }]}>Esta semana</Text>
+      <Text style={[styles.label, styles.recentLabel, { color: accent }]}>Esta semana</Text>
       <View style={styles.summaryCard}>
         <View style={styles.summaryRow}>
           <Text style={styles.summaryValue}>{weekSummary.workoutCount}</Text>
@@ -169,6 +241,11 @@ function createStyles(colors: Palette) {
       fontWeight: '600',
       color: colors.textSecondary,
     },
+    waterMl: {
+      fontSize: 12,
+      color: colors.textSecondary,
+      marginTop: 2,
+    },
     waterButton: {
       width: 48,
       height: 48,
@@ -176,6 +253,44 @@ function createStyles(colors: Palette) {
       alignItems: 'center',
       justifyContent: 'center',
       elevation: 3,
+    },
+    waterSettingsLink: {
+      fontSize: 12,
+      fontWeight: '600',
+      marginTop: 10,
+    },
+    waterSettingsPanel: {
+      backgroundColor: colors.surface,
+      borderRadius: 16,
+      padding: 16,
+      marginTop: 10,
+      elevation: 1,
+    },
+    waterSettingsLabel: {
+      fontSize: 12,
+      fontWeight: '700',
+      color: colors.textSecondary,
+      marginBottom: 6,
+      marginTop: 10,
+    },
+    waterSettingsInput: {
+      backgroundColor: colors.surfaceAlt,
+      borderRadius: 12,
+      paddingHorizontal: 14,
+      paddingVertical: 10,
+      fontSize: 15,
+      color: colors.text,
+    },
+    waterSettingsSave: {
+      marginTop: 16,
+      borderRadius: 12,
+      paddingVertical: 12,
+      alignItems: 'center',
+    },
+    waterSettingsSaveText: {
+      color: 'white',
+      fontWeight: '700',
+      fontSize: 14,
     },
     moodRow: {
       flexDirection: 'row',
