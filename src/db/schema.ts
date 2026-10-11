@@ -131,4 +131,8 @@ export const appSettings = sqliteTable('app_settings', {
   accentColor: text('accent_color').notNull(),
   /** 'light' | 'dark' | 'system'. Null = nunca configurado, cai no padrão 'system'. */
   colorScheme: text('color_scheme'),
+  /** Quantos ml cada "copo" representa. Null = usa o padrão de 250ml. */
+  waterGlassMl: integer('water_glass_ml'),
+  /** De quantas em quantas horas o lembrete de água repete. Null = usa o padrão de 3h. */
+  waterReminderIntervalHours: integer('water_reminder_interval_hours'),
 });
