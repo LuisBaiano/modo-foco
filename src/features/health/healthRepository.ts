@@ -40,9 +40,11 @@ export async function logMeal(input: { type: MealType; notes: string | null }) {
 }
 
 /**
- * Soma +1 copo (250ml) na água de hoje, criando o registro do dia se ainda
- * não existir. Não concede XP (água não é pontuada, só acompanhada), mas
- * ainda dispara o check de conquistas — é o que destrava "hidratação perfeita".
+ * Soma +1 copo na água de hoje, criando o registro do dia se ainda não
+ * existir. O tamanho do copo em ml é configurável (ver settingsRepository) —
+ * aqui só conta unidades. Não concede XP (água não é pontuada, só
+ * acompanhada), mas ainda dispara o check de conquistas — é o que destrava
+ * "hidratação perfeita" (baseada em copos, não em ml).
  */
 export async function addWaterGlass(): Promise<RewardResult> {
   const today = todayISODate();
