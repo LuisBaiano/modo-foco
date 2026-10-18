@@ -47,5 +47,12 @@
     "title": "v0.10.0 — Água configurável",
     "notes": "Ajuste pedido no módulo de Saúde: o copo de água não é mais fixo em 250ml. Agora dá pra configurar o tamanho do seu copo de verdade e o app calcula o total em ml do dia em cima disso. O lembrete também deixou de ser 4 vezes fixas — agora é de X em X horas, do jeito que você configurar, dentro da janela das 8h às 22h. Testando isso no celular encontrei um bug chato: com o teclado aberto, o primeiro toque no botão Salvar só fechava o teclado e não salvava nada, precisava tocar duas vezes. Corrigi.",
     "publishAt": "2026-10-11T19:40:00Z"
+  },
+  {
+    "branch": "release/v0.11.0",
+    "tag": "v0.11.0",
+    "title": "v0.11.0 — Rotina",
+    "notes": "Módulo novo: Rotina. Cadastra blocos de horário fixo do dia a dia (tipo \"Trabalho, 07:30–17:30, toda segunda\") e escolhe em quais dias da semana cada um repete. Quando chega o horário de um bloco, dispara uma notificação lembrando o que você deveria estar fazendo. Pra blocos como caminhada também dá pra ligar o registro de km — aparece um campo direto na lista pra somar a distância do dia. Virou aba nova na barra de baixo.",
+    "publishAt": "2026-10-18T15:15:00Z"
   }
 ]
