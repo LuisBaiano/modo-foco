@@ -1,4 +1,4 @@
-import { integer, sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core';
+import { integer, real, sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core';
 
 /** Hábito cadastrado pelo usuário (diário ou semanal). */
 export const habits = sqliteTable('habits', {
@@ -124,6 +124,37 @@ export const userXp = sqliteTable('user_xp', {
   longestWorkoutStreak: integer('longest_workout_streak').notNull().default(0),
   lastWorkoutDate: text('last_workout_date'),
 });
+
+/**
+ * Bloco de horário da rotina (ex: "Trabalho 07:30-17:30, repete segunda").
+ * `daysOfWeek` guarda dias no mesmo formato do `Date.getDay()` do JS
+ * (0 = domingo ... 6 = sábado), separados por vírgula, ex: "1,2,3,4,5".
+ */
+export const routineItems = sqliteTable('routine_items', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  name: text('name').notNull(),
+  /** Horário no formato HH:MM. */
+  startTime: text('start_time').notNull(),
+  endTime: text('end_time').notNull(),
+  daysOfWeek: text('days_of_week').notNull(),
+  /** Se true, o item ganha um contador de km na tela (ex: Caminhada). */
+  trackKm: integer('track_km', { mode: 'boolean' }).notNull().default(false),
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+});
+
+/** Km percorridos num dia, pros itens de rotina com `trackKm` ligado. */
+export const routineKmLogs = sqliteTable(
+  'routine_km_logs',
+  {
+    id: integer('id').primaryKey({ autoIncrement: true }),
+    routineItemId: integer('routine_item_id')
+      .notNull()
+      .references(() => routineItems.id),
+    date: text('date').notNull(),
+    km: real('km').notNull(),
+  },
+  table => [uniqueIndex('routine_km_logs_item_id_date_unique').on(table.routineItemId, table.date)],
+);
 
 /** Preferências do app. Linha única de id fixo (ver settingsRepository). */
 export const appSettings = sqliteTable('app_settings', {
