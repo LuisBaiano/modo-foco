@@ -3,6 +3,7 @@ import notifee, { AndroidImportance } from '@notifee/react-native';
 export const CHANNEL_STREAK = 'streak';
 export const CHANNEL_HABITS = 'habits';
 export const CHANNEL_WATER = 'water';
+export const CHANNEL_ROUTINE = 'routine';
 
 let ready = false;
 
@@ -15,5 +16,6 @@ export async function ensureNotificationsReady() {
   await notifee.createChannel({ id: CHANNEL_STREAK, name: 'Sequência', importance: AndroidImportance.HIGH });
   await notifee.createChannel({ id: CHANNEL_HABITS, name: 'Hábitos', importance: AndroidImportance.DEFAULT });
   await notifee.createChannel({ id: CHANNEL_WATER, name: 'Água', importance: AndroidImportance.DEFAULT });
+  await notifee.createChannel({ id: CHANNEL_ROUTINE, name: 'Rotina', importance: AndroidImportance.DEFAULT });
   ready = true;
 }

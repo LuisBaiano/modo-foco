@@ -5,6 +5,7 @@ import HabitsNavigator from '../features/habits/HabitsNavigator';
 import StudyNavigator from '../features/study/StudyNavigator';
 import TasksNavigator from '../features/tasks/TasksNavigator';
 import HealthNavigator from '../features/health/HealthNavigator';
+import RoutineNavigator from '../features/routine/RoutineNavigator';
 import HeroIcon, { type IconName } from './HeroIcon';
 import ProfileHeaderButton from './ProfileHeaderButton';
 import { useTheme } from './ThemeContext';
@@ -15,6 +16,7 @@ export type BottomTabParamList = {
   Habitos: undefined;
   Estudos: undefined;
   Tarefas: undefined;
+  Rotina: undefined;
   Saude: undefined;
 };
 
@@ -25,6 +27,7 @@ const TAB_ICON_NAMES: Record<keyof BottomTabParamList, IconName> = {
   Habitos: 'checkCircle',
   Estudos: 'bookOpen',
   Tarefas: 'clipboardDocumentList',
+  Rotina: 'clock',
   Saude: 'heart',
 };
 
@@ -59,6 +62,11 @@ function BottomTabs() {
         name="Tarefas"
         component={TasksNavigator}
         options={{ headerShown: false, title: 'Tarefas' }}
+      />
+      <Tab.Screen
+        name="Rotina"
+        component={RoutineNavigator}
+        options={{ headerShown: false, title: 'Rotina' }}
       />
       <Tab.Screen
         name="Saude"
