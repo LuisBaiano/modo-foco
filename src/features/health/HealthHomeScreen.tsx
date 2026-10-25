@@ -1,8 +1,10 @@
 import { useMemo, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Alert, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import HeroIcon from '../../app/HeroIcon';
+import SelectionActionBar from '../../app/SelectionActionBar';
+import { useSelection } from '../../app/useSelection';
 import { useTheme, type Palette } from '../../app/ThemeContext';
 import { useHealth } from './useHealth';
 import type { HealthStackParamList } from './HealthNavigator';
@@ -50,11 +52,56 @@ function HealthHomeScreen() {
     selectMood,
     updateWaterGlassMl,
     updateWaterReminderIntervalHours,
+    removeWorkouts,
+    removeMeals,
   } = useHealth();
 
   const [editingWaterSettings, setEditingWaterSettings] = useState(false);
   const [glassMlInput, setGlassMlInput] = useState('');
   const [intervalInput, setIntervalInput] = useState('');
+
+  const workoutSelection = useSelection();
+  const mealSelection = useSelection();
+
+  const startWorkoutSelection = (id: number) => {
+    mealSelection.clear();
+    workoutSelection.start(id);
+  };
+
+  const startMealSelection = (id: number) => {
+    workoutSelection.clear();
+    mealSelection.start(id);
+  };
+
+  const handleDeleteWorkouts = () => {
+    const ids = Array.from(workoutSelection.selected);
+    Alert.alert('Excluir treinos', `Excluir ${ids.length} treino${ids.length === 1 ? '' : 's'}?`, [
+      { text: 'Cancelar', style: 'cancel' },
+      {
+        text: 'Excluir',
+        style: 'destructive',
+        onPress: async () => {
+          await removeWorkouts(ids);
+          workoutSelection.clear();
+        },
+      },
+    ]);
+  };
+
+  const handleDeleteMeals = () => {
+    const ids = Array.from(mealSelection.selected);
+    Alert.alert('Excluir refeições', `Excluir ${ids.length} refeiç${ids.length === 1 ? 'ão' : 'ões'}?`, [
+      { text: 'Cancelar', style: 'cancel' },
+      {
+        text: 'Excluir',
+        style: 'destructive',
+        onPress: async () => {
+          await removeMeals(ids);
+          mealSelection.clear();
+        },
+      },
+    ]);
+  };
 
   const openWaterSettings = () => {
     setGlassMlInput(String(waterGlassMl));
@@ -75,6 +122,7 @@ function HealthHomeScreen() {
   };
 
   return (
+    <View style={styles.screen}>
     <ScrollView
       style={styles.container}
       contentContainerStyle={styles.content}
@@ -178,34 +226,83 @@ function HealthHomeScreen() {
       {!loading && recentWorkouts.length > 0 && (
         <>
           <Text style={[styles.label, styles.recentLabel, { color: accent }]}>Treinos recentes</Text>
-          {recentWorkouts.map(workout => (
-            <View key={workout.id} style={styles.recentRow}>
-              <Text style={styles.recentTitle}>{WORKOUT_LABEL[workout.type as WorkoutType]}</Text>
-              <Text style={styles.recentMeta}>
-                {formatDate(workout.date)} · {workout.durationMinutes}min
-              </Text>
-            </View>
-          ))}
+          {recentWorkouts.map(workout => {
+            const isSelected = workoutSelection.selected.has(workout.id);
+            return (
+              <Pressable
+                key={workout.id}
+                style={[styles.recentRow, isSelected && { borderWidth: 2, borderColor: accent }]}
+                onPress={() => (workoutSelection.isSelecting ? workoutSelection.toggle(workout.id) : undefined)}
+                onLongPress={() => startWorkoutSelection(workout.id)}>
+                {workoutSelection.isSelecting && (
+                  <View style={[styles.recentCheckbox, isSelected && { backgroundColor: accent, borderColor: accent }]}>
+                    {isSelected && <HeroIcon name="check" size={12} color="white" />}
+                  </View>
+                )}
+                <View style={styles.recentBody}>
+                  <Text style={styles.recentTitle}>{WORKOUT_LABEL[workout.type as WorkoutType]}</Text>
+                  <Text style={styles.recentMeta}>
+                    {formatDate(workout.date)} · {workout.durationMinutes}min
+                  </Text>
+                </View>
+              </Pressable>
+            );
+          })}
         </>
       )}
 
       {!loading && recentMeals.length > 0 && (
         <>
           <Text style={[styles.label, styles.recentLabel, { color: accent }]}>Refeições recentes</Text>
-          {recentMeals.map(meal => (
-            <View key={meal.id} style={styles.recentRow}>
-              <Text style={styles.recentTitle}>{MEAL_LABEL[meal.type as MealType]}</Text>
-              <Text style={styles.recentMeta}>{formatDate(meal.date)}</Text>
-            </View>
-          ))}
+          {recentMeals.map(meal => {
+            const isSelected = mealSelection.selected.has(meal.id);
+            return (
+              <Pressable
+                key={meal.id}
+                style={[styles.recentRow, isSelected && { borderWidth: 2, borderColor: accent }]}
+                onPress={() => (mealSelection.isSelecting ? mealSelection.toggle(meal.id) : undefined)}
+                onLongPress={() => startMealSelection(meal.id)}>
+                {mealSelection.isSelecting && (
+                  <View style={[styles.recentCheckbox, isSelected && { backgroundColor: accent, borderColor: accent }]}>
+                    {isSelected && <HeroIcon name="check" size={12} color="white" />}
+                  </View>
+                )}
+                <View style={styles.recentBody}>
+                  <Text style={styles.recentTitle}>{MEAL_LABEL[meal.type as MealType]}</Text>
+                  <Text style={styles.recentMeta}>{formatDate(meal.date)}</Text>
+                </View>
+              </Pressable>
+            );
+          })}
         </>
       )}
+      {(workoutSelection.isSelecting || mealSelection.isSelecting) && <View style={styles.selectionBarSpacer} />}
     </ScrollView>
+    {workoutSelection.isSelecting && (
+      <SelectionActionBar
+        count={workoutSelection.selected.size}
+        colors={colors}
+        onCancel={workoutSelection.clear}
+        onDelete={handleDeleteWorkouts}
+      />
+    )}
+    {mealSelection.isSelecting && (
+      <SelectionActionBar
+        count={mealSelection.selected.size}
+        colors={colors}
+        onCancel={mealSelection.clear}
+        onDelete={handleDeleteMeals}
+      />
+    )}
+    </View>
   );
 }
 
 function createStyles(colors: Palette) {
   return StyleSheet.create({
+    screen: {
+      flex: 1,
+    },
     container: {
       flex: 1,
       backgroundColor: colors.background,
@@ -354,9 +451,27 @@ function createStyles(colors: Palette) {
       padding: 16,
       marginBottom: 10,
       flexDirection: 'row',
-      justifyContent: 'space-between',
       alignItems: 'center',
       elevation: 1,
+    },
+    recentCheckbox: {
+      width: 22,
+      height: 22,
+      borderRadius: 11,
+      borderWidth: 2,
+      borderColor: colors.border,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginRight: 12,
+    },
+    recentBody: {
+      flex: 1,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    selectionBarSpacer: {
+      height: 74,
     },
     recentTitle: {
       fontWeight: '700',

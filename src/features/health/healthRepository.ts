@@ -1,4 +1,4 @@
-import { desc, eq, gte } from 'drizzle-orm';
+import { desc, eq, gte, inArray } from 'drizzle-orm';
 import { db } from '../../db/client';
 import { mealLogs, moodLogs, waterLogs, workoutLogs } from '../../db/schema';
 import { onHealthLogWithoutXp, onWorkoutLogged, type RewardResult } from '../gamification/gamificationRepository';
@@ -84,6 +84,22 @@ export async function getRecentWorkouts(limit = 5) {
 
 export async function getRecentMeals(limit = 5) {
   return db.select().from(mealLogs).orderBy(desc(mealLogs.id)).limit(limit);
+}
+
+/** Exclui vários treinos de uma vez (seleção múltipla na lista). */
+export async function deleteWorkouts(workoutIds: number[]) {
+  if (workoutIds.length === 0) {
+    return;
+  }
+  await db.delete(workoutLogs).where(inArray(workoutLogs.id, workoutIds));
+}
+
+/** Exclui várias refeições de uma vez (seleção múltipla na lista). */
+export async function deleteMeals(mealIds: number[]) {
+  if (mealIds.length === 0) {
+    return;
+  }
+  await db.delete(mealLogs).where(inArray(mealLogs.id, mealIds));
 }
 
 /** Resumo dos últimos 7 dias (hoje incluso) pro card de estatísticas semanais. */

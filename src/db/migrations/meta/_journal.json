@@ -57,6 +57,13 @@
       "when": 1787423130668,
       "tag": "0007_nebulous_spacker_dave",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1787430000000,
+      "tag": "0008_remove_projects_add_tags",
+      "breakpoints": true
     }
   ]
 }

@@ -5,9 +5,6 @@ import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-
 import { useTheme, type Palette } from '../../app/ThemeContext';
 import type { TasksStackParamList } from './TasksNavigator';
 import { type Priority, createTask, getTask, updateTask } from './tasksRepository';
-import { listProjects } from './projectsRepository';
-
-type ProjectOption = Awaited<ReturnType<typeof listProjects>>[number];
 
 type Props = NativeStackScreenProps<TasksStackParamList, 'TaskForm'>;
 
@@ -23,10 +20,18 @@ function tomorrowISODate(): string {
   return d.toISOString().slice(0, 10);
 }
 
+function parseTagsInput(value: string): string[] {
+  return value
+    .split(',')
+    .map(tag => tag.trim())
+    .filter(tag => tag.length > 0);
+}
+
 /**
  * Formulário de criar/editar tarefa. Prazo é por chips rápidos (sem
  * prazo/hoje/amanhã) em vez de date-picker — evita puxar uma lib nova,
- * mesma decisão tomada pro targetTime do hábito.
+ * mesma decisão tomada pro targetTime do hábito. Tags são texto livre
+ * separado por vírgula, sem catálogo/gerenciamento próprio.
  */
 function TaskFormScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<TasksStackParamList>>();
@@ -38,12 +43,7 @@ function TaskFormScreen() {
   const [title, setTitle] = useState('');
   const [priority, setPriority] = useState<Priority>('medium');
   const [dueOption, setDueOption] = useState<DueOption>('none');
-  const [projectId, setProjectId] = useState<number | null>(null);
-  const [projects, setProjects] = useState<ProjectOption[]>([]);
-
-  useEffect(() => {
-    listProjects().then(setProjects);
-  }, []);
+  const [tagsInput, setTagsInput] = useState('');
 
   useEffect(() => {
     if (taskId != null) {
@@ -53,7 +53,7 @@ function TaskFormScreen() {
         }
         setTitle(task.title);
         setPriority(task.priority as Priority);
-        setProjectId(task.projectId);
+        setTagsInput(task.tags.join(', '));
         if (task.dueDate === todayISODate()) {
           setDueOption('today');
         } else if (task.dueDate === tomorrowISODate()) {
@@ -70,7 +70,7 @@ function TaskFormScreen() {
       return;
     }
     const dueDate = dueOption === 'today' ? todayISODate() : dueOption === 'tomorrow' ? tomorrowISODate() : null;
-    const input = { title: title.trim(), priority, dueDate, projectId };
+    const input = { title: title.trim(), priority, dueDate, tags: parseTagsInput(tagsInput) };
     if (taskId != null) {
       await updateTask(taskId, input);
     } else {
@@ -135,30 +135,14 @@ function TaskFormScreen() {
         />
       </View>
 
-      {projects.length > 0 && (
-        <>
-          <Text style={[styles.label, { color: accent }]}>Projeto</Text>
-          <View style={styles.chipWrap}>
-            <ChoiceChip
-              label="Nenhum"
-              selected={projectId == null}
-              accent={accent}
-              styles={styles}
-              onPress={() => setProjectId(null)}
-            />
-            {projects.map(project => (
-              <ChoiceChip
-                key={project.id}
-                label={project.name}
-                selected={projectId === project.id}
-                accent={project.color}
-                styles={styles}
-                onPress={() => setProjectId(project.id)}
-              />
-            ))}
-          </View>
-        </>
-      )}
+      <Text style={[styles.label, { color: accent }]}>Tags (opcional)</Text>
+      <TextInput
+        style={styles.input}
+        value={tagsInput}
+        onChangeText={setTagsInput}
+        placeholder="Ex: casa, urgente, faculdade..."
+        placeholderTextColor={colors.textSecondary}
+      />
 
       <Pressable
         style={[styles.saveButton, { backgroundColor: accent }, !title.trim() && styles.saveButtonDisabled]}
@@ -217,11 +201,6 @@ function createStyles(colors: Palette) {
     },
     segmented: {
       flexDirection: 'row',
-      gap: 8,
-    },
-    chipWrap: {
-      flexDirection: 'row',
-      flexWrap: 'wrap',
       gap: 8,
     },
     chip: {

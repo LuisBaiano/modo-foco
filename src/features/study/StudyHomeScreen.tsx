@@ -1,7 +1,10 @@
 import { useMemo, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Alert, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import HeroIcon from '../../app/HeroIcon';
+import SelectionActionBar from '../../app/SelectionActionBar';
+import { useSelection } from '../../app/useSelection';
 import { useTheme, type Palette } from '../../app/ThemeContext';
 import { useStudyHome } from './useStudyHome';
 import type { StudyStackParamList } from './StudyNavigator';
@@ -25,10 +28,26 @@ function StudyHomeScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<StudyStackParamList>>();
   const { accent, colors } = useTheme();
   const styles = useMemo(() => createStyles(colors), [colors]);
-  const { stats, recentSessions, loading } = useStudyHome();
+  const { stats, recentSessions, loading, removeSessions } = useStudyHome();
+  const { selected, isSelecting, start, toggle: toggleSelected, clear } = useSelection();
 
   const [subject, setSubject] = useState('');
   const [mode, setMode] = useState<StudyMode>('pomodoro');
+
+  const handleDeleteSessions = () => {
+    const ids = Array.from(selected);
+    Alert.alert('Excluir sessões', `Excluir ${ids.length} sess${ids.length === 1 ? 'ão' : 'ões'}?`, [
+      { text: 'Cancelar', style: 'cancel' },
+      {
+        text: 'Excluir',
+        style: 'destructive',
+        onPress: async () => {
+          await removeSessions(ids);
+          clear();
+        },
+      },
+    ]);
+  };
 
   const handleStart = async () => {
     if (!subject.trim()) {
@@ -41,6 +60,7 @@ function StudyHomeScreen() {
   const maxMinutes = Math.max(1, ...stats.bySubject.map(s => s.minutes));
 
   return (
+    <View style={styles.screen}>
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <Text style={[styles.label, { color: accent }]}>Estudar agora</Text>
       <TextInput
@@ -91,19 +111,38 @@ function StudyHomeScreen() {
       {!loading && recentSessions.length > 0 && (
         <>
           <Text style={[styles.label, styles.statsLabel, { color: accent }]}>Sessões recentes</Text>
-          {recentSessions.map((session: StudySession) => (
-            <View key={session.id} style={styles.sessionRow}>
-              <Text style={styles.sessionSubject}>{session.subject}</Text>
-              <Text style={styles.sessionMeta}>
-                {formatSessionDate(session.startedAt)}
-                {session.mode === 'pomodoro' ? ` · ${session.cycles} ciclos` : ''}
-                {session.questionsAnswered != null ? ` · ${session.questionsAnswered} questões` : ''}
-              </Text>
-            </View>
-          ))}
+          {recentSessions.map((session: StudySession) => {
+            const isSelected = selected.has(session.id);
+            return (
+              <Pressable
+                key={session.id}
+                style={[styles.sessionRow, isSelected && { borderWidth: 2, borderColor: accent }]}
+                onPress={() => (isSelecting ? toggleSelected(session.id) : undefined)}
+                onLongPress={() => start(session.id)}>
+                {isSelecting && (
+                  <View style={[styles.sessionCheckbox, isSelected && { backgroundColor: accent, borderColor: accent }]}>
+                    {isSelected && <HeroIcon name="check" size={12} color="white" />}
+                  </View>
+                )}
+                <View style={styles.sessionBody}>
+                  <Text style={styles.sessionSubject}>{session.subject}</Text>
+                  <Text style={styles.sessionMeta}>
+                    {formatSessionDate(session.startedAt)}
+                    {session.mode === 'pomodoro' ? ` · ${session.cycles} ciclos` : ''}
+                    {session.questionsAnswered != null ? ` · ${session.questionsAnswered} questões` : ''}
+                  </Text>
+                </View>
+              </Pressable>
+            );
+          })}
         </>
       )}
+      {isSelecting && <View style={styles.selectionBarSpacer} />}
     </ScrollView>
+    {isSelecting && (
+      <SelectionActionBar count={selected.size} colors={colors} onCancel={clear} onDelete={handleDeleteSessions} />
+    )}
+    </View>
   );
 }
 
@@ -129,6 +168,9 @@ function ModeChip({
 
 function createStyles(colors: Palette) {
   return StyleSheet.create({
+    screen: {
+      flex: 1,
+    },
     container: {
       flex: 1,
       backgroundColor: colors.background,
@@ -240,9 +282,27 @@ function createStyles(colors: Palette) {
       padding: 16,
       marginBottom: 10,
       flexDirection: 'row',
-      justifyContent: 'space-between',
       alignItems: 'center',
       elevation: 1,
+    },
+    sessionCheckbox: {
+      width: 22,
+      height: 22,
+      borderRadius: 11,
+      borderWidth: 2,
+      borderColor: colors.border,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginRight: 12,
+    },
+    sessionBody: {
+      flex: 1,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    selectionBarSpacer: {
+      height: 74,
     },
     sessionSubject: {
       fontWeight: '700',

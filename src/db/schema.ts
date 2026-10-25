@@ -29,25 +29,15 @@ export const habitLogs = sqliteTable(
   table => [uniqueIndex('habit_logs_habit_id_date_unique').on(table.habitId, table.date)],
 );
 
-/** Projeto que agrupa tarefas; progresso é sempre calculado, não armazenado. */
-export const projects = sqliteTable('projects', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
-  name: text('name').notNull(),
-  /** Cor em hex, usada nos badges e na barra de progresso. */
-  color: text('color').notNull(),
-  description: text('description'),
-  createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
-});
-
-/** Tarefa, opcionalmente ligada a um projeto. */
+/** Tarefa, com tags livres separadas por vírgula (ex: "casa,urgente"). */
 export const tasks = sqliteTable('tasks', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   title: text('title').notNull(),
   priority: text('priority', { enum: ['low', 'medium', 'high'] }).notNull(),
   /** Data no formato YYYY-MM-DD, ou null pra "sem prazo". */
   dueDate: text('due_date'),
-  /** Null quando a tarefa não pertence a nenhum projeto (ou o projeto foi excluído). */
-  projectId: integer('project_id').references(() => projects.id),
+  /** Tags livres separadas por vírgula, ou null se não tiver nenhuma. */
+  tags: text('tags'),
   completed: integer('completed', { mode: 'boolean' }).notNull().default(false),
   completedAt: integer('completed_at', { mode: 'timestamp' }),
 });
