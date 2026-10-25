@@ -1,12 +1,14 @@
 import { useMemo } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Alert, FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import HeroIcon from '../../app/HeroIcon';
+import SelectionActionBar from '../../app/SelectionActionBar';
+import { useSelection } from '../../app/useSelection';
 import { useTheme, type Palette } from '../../app/ThemeContext';
 import { useTasks } from './useTasks';
 import type { TasksStackParamList } from './TasksNavigator';
-import type { Priority, TaskWithProject } from './tasksRepository';
+import type { Priority, TaskWithTags } from './tasksRepository';
 
 const PRIORITY_COLOR: Record<Priority, string> = {
   high: '#dc2626',
@@ -52,23 +54,50 @@ function formatDueDate(dueDate: string | null): { label: string; overdue: boolea
 /** Tela principal da aba Tarefas: lista com toggle de concluída + botão de criar. */
 function TasksListScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<TasksStackParamList>>();
-  const { tasks, loading, toggle } = useTasks();
+  const { tasks, loading, toggle, remove } = useTasks();
   const { accent, colors } = useTheme();
   const styles = useMemo(() => createStyles(colors), [colors]);
+  const { selected, isSelecting, start, toggle: toggleSelected, clear } = useSelection();
+
+  const handleDelete = () => {
+    const ids = Array.from(selected);
+    Alert.alert('Excluir tarefas', `Excluir ${ids.length} tarefa${ids.length === 1 ? '' : 's'}?`, [
+      { text: 'Cancelar', style: 'cancel' },
+      {
+        text: 'Excluir',
+        style: 'destructive',
+        onPress: async () => {
+          await remove(ids);
+          clear();
+        },
+      },
+    ]);
+  };
 
   return (
     <View style={styles.container}>
       <FlatList
         data={tasks}
         keyExtractor={item => String(item.id)}
-        contentContainerStyle={[styles.listContent, tasks.length === 0 && styles.emptyContainer]}
+        contentContainerStyle={[
+          styles.listContent,
+          tasks.length === 0 && styles.emptyContainer,
+          isSelecting && styles.listContentSelecting,
+        ]}
         renderItem={({ item }) => (
           <TaskRow
             item={item}
             styles={styles}
-            colors={colors}
+            accent={accent}
+            isSelecting={isSelecting}
+            isSelected={selected.has(item.id)}
             onToggle={() => toggle(item.id)}
-            onOpen={() => navigation.navigate('TaskForm', { taskId: item.id })}
+            onOpen={() =>
+              isSelecting
+                ? toggleSelected(item.id)
+                : navigation.navigate('TaskForm', { taskId: item.id })
+            }
+            onLongPress={() => start(item.id)}
           />
         )}
         ListEmptyComponent={
@@ -79,11 +108,16 @@ function TasksListScreen() {
           ) : undefined
         }
       />
-      <Pressable
-        style={[styles.fab, { backgroundColor: accent, shadowColor: accent }]}
-        onPress={() => navigation.navigate('TaskForm', undefined)}>
-        <HeroIcon name="plus" size={26} color="white" />
-      </Pressable>
+      {!isSelecting && (
+        <Pressable
+          style={[styles.fab, { backgroundColor: accent, shadowColor: accent }]}
+          onPress={() => navigation.navigate('TaskForm', undefined)}>
+          <HeroIcon name="plus" size={26} color="white" />
+        </Pressable>
+      )}
+      {isSelecting && (
+        <SelectionActionBar count={selected.size} colors={colors} onCancel={clear} onDelete={handleDelete} />
+      )}
     </View>
   );
 }
@@ -91,23 +125,35 @@ function TasksListScreen() {
 function TaskRow({
   item,
   styles,
-  colors,
+  accent,
+  isSelecting,
+  isSelected,
   onToggle,
   onOpen,
+  onLongPress,
 }: {
-  item: TaskWithProject;
+  item: TaskWithTags;
   styles: ReturnType<typeof createStyles>;
-  colors: Palette;
+  accent: string;
+  isSelecting: boolean;
+  isSelected: boolean;
   onToggle: () => void;
   onOpen: () => void;
+  onLongPress: () => void;
 }) {
   const due = formatDueDate(item.dueDate);
   return (
-    <View style={[styles.card, item.completed && styles.cardDone]}>
-      <Pressable onPress={onToggle} hitSlop={8} style={[styles.checkbox, item.completed && styles.checkboxDone]}>
-        {item.completed && <HeroIcon name="check" size={14} color="white" />}
-      </Pressable>
-      <Pressable style={styles.rowBody} onPress={onOpen}>
+    <View style={[styles.card, item.completed && styles.cardDone, isSelected && { borderWidth: 2, borderColor: accent }]}>
+      {isSelecting ? (
+        <View style={[styles.checkbox, isSelected && { backgroundColor: accent, borderColor: accent }]}>
+          {isSelected && <HeroIcon name="check" size={14} color="white" />}
+        </View>
+      ) : (
+        <Pressable onPress={onToggle} hitSlop={8} style={[styles.checkbox, item.completed && styles.checkboxDone]}>
+          {item.completed && <HeroIcon name="check" size={14} color="white" />}
+        </Pressable>
+      )}
+      <Pressable style={styles.rowBody} onPress={onOpen} onLongPress={onLongPress}>
         <Text style={[styles.rowTitle, item.completed && styles.rowTitleDone]}>{item.title}</Text>
         <View style={styles.badgeRow}>
           <View style={[styles.badge, { backgroundColor: PRIORITY_COLOR[item.priority] + '22' }]}>
@@ -115,13 +161,11 @@ function TaskRow({
               {PRIORITY_LABEL[item.priority]}
             </Text>
           </View>
-          {item.projectName && (
-            <View style={[styles.badge, { backgroundColor: (item.projectColor ?? colors.textMuted) + '22' }]}>
-              <Text style={[styles.badgeText, { color: item.projectColor ?? colors.textSecondary }]}>
-                {item.projectName}
-              </Text>
+          {item.tags.map(tag => (
+            <View key={tag} style={styles.badge}>
+              <Text style={styles.badgeText}>#{tag}</Text>
             </View>
-          )}
+          ))}
           {due && (
             <View style={[styles.badge, due.overdue && styles.badgeOverdue]}>
               <Text style={[styles.badgeText, due.overdue && styles.badgeOverdueText]}>{due.label}</Text>
@@ -146,6 +190,9 @@ function createStyles(colors: Palette) {
     },
     emptyContainer: {
       flexGrow: 1,
+    },
+    listContentSelecting: {
+      paddingBottom: 90,
     },
     empty: {
       flex: 1,
