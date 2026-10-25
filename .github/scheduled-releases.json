@@ -1,12 +1,5 @@
 [
   {
-    "branch": "release/v0.12.0",
-    "tag": "v0.12.0",
-    "title": "v0.12.0 — Exclusão em lote + tags",
-    "notes": "Duas melhorias para organizar melhor o app: agora é possível selecionar e excluir vários itens de uma vez em listas como tarefas, estudos, treinos e refeições. Nas tarefas, os projetos foram substituídos por tags livres, que são mais rápidas de usar e não exigem cadastro prévio.",
-    "publishAt": "2026-10-25T18:20:00Z"
-  },
-  {
     "branch": "release/v0.13.0",
     "tag": "v0.13.0",
     "title": "v0.13.0 — Remoção do check-in de humor",
