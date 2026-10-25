@@ -3,6 +3,8 @@ import { useFocusEffect } from '@react-navigation/native';
 import {
   addWaterGlass,
   type WeekSummary,
+  deleteMeals,
+  deleteWorkouts,
   getRecentMeals,
   getRecentWorkouts,
   getTodayMood,
@@ -100,6 +102,22 @@ export function useHealth() {
     [refresh],
   );
 
+  const removeWorkouts = useCallback(
+    async (workoutIds: number[]) => {
+      await deleteWorkouts(workoutIds);
+      await refresh();
+    },
+    [refresh],
+  );
+
+  const removeMeals = useCallback(
+    async (mealIds: number[]) => {
+      await deleteMeals(mealIds);
+      await refresh();
+    },
+    [refresh],
+  );
+
   return {
     loading,
     waterGlasses,
@@ -114,5 +132,7 @@ export function useHealth() {
     selectMood,
     updateWaterGlassMl,
     updateWaterReminderIntervalHours,
+    removeWorkouts,
+    removeMeals,
   };
 }
