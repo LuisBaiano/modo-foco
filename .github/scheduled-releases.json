@@ -54,5 +54,12 @@
     "title": "v0.11.0 — Rotina",
     "notes": "Módulo novo: Rotina. Cadastra blocos de horário fixo do dia a dia (tipo \"Trabalho, 07:30–17:30, toda segunda\") e escolhe em quais dias da semana cada um repete. Quando chega o horário de um bloco, dispara uma notificação lembrando o que você deveria estar fazendo. Pra blocos como caminhada também dá pra ligar o registro de km — aparece um campo direto na lista pra somar a distância do dia. Virou aba nova na barra de baixo.",
     "publishAt": "2026-10-18T15:15:00Z"
+  },
+  {
+    "branch": "release/v0.12.0",
+    "tag": "v0.12.0",
+    "title": "v0.12.0 — Exclusão em lote + tags",
+    "notes": "Duas coisas que sentia falta: primeiro, agora dá pra excluir várias coisas de uma vez — segura um item numa lista (tarefa, sessão de estudo, treino ou refeição) que entra num modo de seleção, marca quantos quiser e exclui tudo junto, ao invés de um por um. Segundo, tirei o módulo de Projetos e coloquei tags livres nas tarefas no lugar — mais simples pra organizar sem precisar cadastrar projeto antes. Detalhe técnico chato: a migração que remove a coluna antiga travava porque o SQLite não deixa apagar uma coluna que tem chave estrangeira direto, tive que recriar a tabela. Peguei isso testando no celular antes de ir pro ar.",
+    "publishAt": "2026-10-25T18:20:00Z"
   }
 ]
