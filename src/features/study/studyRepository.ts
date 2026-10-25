@@ -1,4 +1,4 @@
-import { and, eq, gte, isNotNull } from 'drizzle-orm';
+import { and, eq, gte, inArray, isNotNull } from 'drizzle-orm';
 import { db } from '../../db/client';
 import { studySessions } from '../../db/schema';
 import { onStudySessionEnded, type RewardResult } from '../gamification/gamificationRepository';
@@ -124,4 +124,12 @@ export async function listRecentSessions(limit = 5): Promise<StudySession[]> {
   return (sessions as StudySession[])
     .sort((a, b) => b.startedAt.getTime() - a.startedAt.getTime())
     .slice(0, limit);
+}
+
+/** Exclui várias sessões de uma vez (seleção múltipla na lista). */
+export async function deleteSessions(sessionIds: number[]) {
+  if (sessionIds.length === 0) {
+    return;
+  }
+  await db.delete(studySessions).where(inArray(studySessions.id, sessionIds));
 }

@@ -1,6 +1,12 @@
 import { useCallback, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
-import { type StudySession, type WeeklyStats, getWeeklyStats, listRecentSessions } from './studyRepository';
+import {
+  type StudySession,
+  type WeeklyStats,
+  deleteSessions,
+  getWeeklyStats,
+  listRecentSessions,
+} from './studyRepository';
 
 const EMPTY_STATS: WeeklyStats = { totalMinutes: 0, bySubject: [] };
 
@@ -27,5 +33,13 @@ export function useStudyHome() {
     }, [refresh]),
   );
 
-  return { stats, recentSessions, loading, refresh };
+  const removeSessions = useCallback(
+    async (sessionIds: number[]) => {
+      await deleteSessions(sessionIds);
+      await refresh();
+    },
+    [refresh],
+  );
+
+  return { stats, recentSessions, loading, refresh, removeSessions };
 }
