@@ -87,14 +87,6 @@ export const waterLogs = sqliteTable('water_logs', {
   date: text('date').notNull(),
 });
 
-/** Check-in diário de humor/energia. */
-export const moodLogs = sqliteTable('mood_logs', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
-  /** Escala de 1 (pior) a 5 (melhor). */
-  level: integer('level').notNull(),
-  date: text('date').notNull(),
-});
-
 /** Conquista desbloqueada pelo usuário (fase de gamificação). */
 export const achievements = sqliteTable('achievements', {
   id: integer('id').primaryKey({ autoIncrement: true }),

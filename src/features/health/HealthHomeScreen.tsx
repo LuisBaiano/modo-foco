@@ -12,8 +12,6 @@ import type { MealType, WorkoutType } from './healthRepository';
 
 const WATER_GOAL_GLASSES = 8;
 
-const MOOD_EMOJIS = ['😞', '😕', '😐', '🙂', '😄'];
-
 const WORKOUT_LABEL: Record<WorkoutType, string> = {
   walk: 'Caminhada',
   strength: 'Musculação',
@@ -34,7 +32,7 @@ function formatDate(date: string): string {
   return `${day}/${month}`;
 }
 
-/** Tela principal da aba Saúde: água, humor, resumo semanal e atalhos de registro. */
+/** Tela principal da aba Saúde: água, resumo semanal e atalhos de registro. */
 function HealthHomeScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<HealthStackParamList>>();
   const { accent, colors } = useTheme();
@@ -44,12 +42,10 @@ function HealthHomeScreen() {
     waterGlasses,
     waterGlassMl,
     waterReminderIntervalHours,
-    mood,
     weekSummary,
     recentWorkouts,
     recentMeals,
     addWater,
-    selectMood,
     updateWaterGlassMl,
     updateWaterReminderIntervalHours,
     removeWorkouts,
@@ -173,21 +169,6 @@ function HealthHomeScreen() {
         </View>
       )}
 
-      <Text style={[styles.label, styles.recentLabel, { color: accent }]}>Como você está hoje?</Text>
-      <View style={styles.moodRow}>
-        {MOOD_EMOJIS.map((emoji, index) => {
-          const level = index + 1;
-          return (
-            <Pressable
-              key={level}
-              style={[styles.moodOption, mood === level && { borderColor: accent, borderWidth: 3 }]}
-              onPress={() => selectMood(level)}>
-              <Text style={styles.moodEmoji}>{emoji}</Text>
-            </Pressable>
-          );
-        })}
-      </View>
-
       <Text style={[styles.label, styles.recentLabel, { color: accent }]}>Esta semana</Text>
       <View style={styles.summaryCard}>
         <View style={styles.summaryRow}>
@@ -201,12 +182,6 @@ function HealthHomeScreen() {
         <View style={styles.summaryRow}>
           <Text style={styles.summaryValue}>{weekSummary.waterGlasses}</Text>
           <Text style={styles.summaryCaption}>copos de água</Text>
-        </View>
-        <View style={styles.summaryRow}>
-          <Text style={styles.summaryValue}>
-            {weekSummary.averageMood != null ? weekSummary.averageMood.toFixed(1) : '—'}
-          </Text>
-          <Text style={styles.summaryCaption}>humor médio</Text>
         </View>
       </View>
 
@@ -388,23 +363,6 @@ function createStyles(colors: Palette) {
       color: 'white',
       fontWeight: '700',
       fontSize: 14,
-    },
-    moodRow: {
-      flexDirection: 'row',
-      gap: 12,
-      marginTop: 4,
-    },
-    moodOption: {
-      width: 52,
-      height: 52,
-      borderRadius: 26,
-      backgroundColor: colors.surface,
-      alignItems: 'center',
-      justifyContent: 'center',
-      elevation: 1,
-    },
-    moodEmoji: {
-      fontSize: 24,
     },
     summaryCard: {
       backgroundColor: colors.surface,
