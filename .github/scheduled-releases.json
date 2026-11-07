@@ -1,9 +1,1 @@
-[
-  {
-    "branch": "release/v0.14.0",
-    "tag": "v0.14.0",
-    "title": "v0.14.0 — Aviso de streak mais afiado + ícone novo",
-    "notes": "Melhorei os avisos de sequência em risco. Agora há um lembrete às 20h e outro às 22h30, com contagem regressiva até meia-noite. As mensagens mostram há quantos dias a sequência está ativa e só aparecem quando há uma sequência para proteger.\n\nTambém troquei o ícone padrão do React Native por um ícone próprio de foco, em verde-água, com suporte ao formato adaptativo do Android.",
-    "publishAt": "2026-11-07T19:50:00Z"
-  }
-]
+[]
