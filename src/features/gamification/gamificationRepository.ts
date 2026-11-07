@@ -74,7 +74,7 @@ async function recordDailyActivity(): Promise<{ streakBroken: boolean }> {
     .set({ currentStreak: newStreak, longestStreak, lastActiveDate: today, totalXp: xpAfterPenalty })
     .where(eq(userXp.id, row.id));
 
-  await rescheduleStreakReminder(true);
+  await rescheduleStreakReminder(true, newStreak);
 
   return { streakBroken };
 }

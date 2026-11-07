@@ -2,7 +2,7 @@ import { ensureNotificationsReady } from './notificationSetup';
 import { registerForegroundNotificationEvents } from './notificationEvents';
 import { scheduleWaterReminders } from './waterReminders';
 import { rescheduleStreakReminder } from './streakReminder';
-import { isActiveToday } from '../gamification/gamificationRepository';
+import { getUserXpSummary, isActiveToday } from '../gamification/gamificationRepository';
 
 /**
  * Roda no boot do app e sempre que ele volta pro primeiro plano: garante
@@ -18,7 +18,8 @@ export async function refreshNotificationsState() {
   try {
     await ensureNotificationsReady();
     await scheduleWaterReminders();
-    await rescheduleStreakReminder(await isActiveToday());
+    const [active, { currentStreak }] = await Promise.all([isActiveToday(), getUserXpSummary()]);
+    await rescheduleStreakReminder(active, currentStreak);
   } catch (error) {
     console.warn('Falha ao configurar notificações', error);
   }
